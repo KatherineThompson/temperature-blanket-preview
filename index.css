@@ -17,3 +17,7 @@ h1 {
 .show {
     display: normal;
 }
+
+label {
+    font-family: Arial, Helvetica, sans-serif;
+}
