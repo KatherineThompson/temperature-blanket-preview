@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="index.css"/>
+        <script src="http://code.jquery.com/jquery-2.2.0.js"></script>
+        <script src="index.js"></script>
+        <title>Temperature Blanket Preview</title>
+    </head>
+    <body>
+        <h1>Temperature Blanket Preview</h1>
+        <form id="location">
+            <label for="zipCode">Zip Code:</label>
+            <input type="text" name="zipCode">
+                        
+            <label for="startDate">Start Date:</label>
+            <input type="date" name="startDate">
+            
+            <label for="endDate">End Date:</label>
+            <input type="date" name="endDate">
+            
+            <button>Add</button>
+        </form>
+        
+        <form id="colors">
+            <label for="color">Color 1:</label>
+            <input type="color">
+            
+            <label for="color">Color 2:</label>
+            <input type="color">
+            
+            <label for="color">Color 3:</label>
+            <input type="color">
+            
+            <label for="color">Color 4:</label>
+            <input type="color">
+            
+            <label for="color">Color 5:</label>
+            <input type="color">
+        </form>
+        <!--should add fallback text-->
+        <canvas id="canvas" height="2400" width="2400"></canvas>
+    </body>
+</html>

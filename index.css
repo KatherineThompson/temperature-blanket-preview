@@ -1,0 +1,19 @@
+@import url(https://fonts.googleapis.com/css?family=Lobster);
+
+canvas {
+    border: thin solid black;
+    margin-top: 20px;
+}
+
+h1 {
+    font-family: "lobster";
+    color: deeppink;
+}
+
+.hidden {
+    display: none;
+}
+
+.show {
+    display: normal;
+}
