@@ -19,7 +19,6 @@
             <label for="endDate">End Date:</label>
             <input type="date" name="endDate">
             
-            <button>Add</button>
         </form>
         
         <form id="colors">
@@ -38,7 +37,29 @@
             <label for="color">Color 5:</label>
             <input type="color">
         </form>
-        <!--should add fallback text-->
-        <canvas id="canvas" height="2400" width="2400"></canvas>
+        
+        <form id="optional">
+            <label for="neutralColor">Add an additional color:</label>
+            <input type="color">
+            
+            <div>
+            
+                <input type="checkbox" name="dayRow">
+                <label for="dayRow">As an extra row between each day</label>
+            </div>
+            
+            <div>
+                <input type="checkbox" name="monthRow">
+                <label for="monthRow">As an extra row between each month</label>
+            </div>
+            <div>    
+                <input type="checkbox" name="triangleCaps">
+                <label for="triangleCaps">As the first and last rows</label>
+           </div>
+        </form>
+        
+        <button>Submit</button>
+        
+        <canvas id="canvas" height="2400" width="2400">Visualization of weather data as a knitted or crocheted blanket</canvas>
     </body>
 </html>
