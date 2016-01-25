@@ -8,8 +8,8 @@ window.addEventListener("load", function () {
         const tempMax = 104;
         const numColors = 10;
         const degreeDiff = (tempMax - tempMin)/numColors;
-        const yarnColors = ["#332546", "#624070", "#4B4D6B", "#074771", "#31473D", "#48634C", "#EBC05B","#D56133", "#9D1F33", "#7C1623"];
-        const neutralColor = "#6C7073";
+        const yarnColors = [];
+        let neutralColor = $("#neutralColor").val();
         const triStepSize = 5;
         const scaleFactor = 1;
         const colorStats = {};
@@ -19,6 +19,19 @@ window.addEventListener("load", function () {
         const canvas = document.getElementById("canvas").getContext("2d");
         canvas.scale(scaleFactor, scaleFactor);
         canvas.translate(1200, 0);
+        
+        $("#submitButton").click(function() {
+            getColorInput();
+            neutralColor = $("#neutralColor").val();
+            drawBlanket();
+            calculatePercent();
+        });
+        
+        function getColorInput() {
+            $("#colors input").each(function(index, color) {
+                yarnColors[index] = $(color).val();
+            });
+        }
         
         function addColorStats () {
             for (let i = 0; i < yarnColors.length; i++) {
@@ -200,9 +213,9 @@ window.addEventListener("load", function () {
             }
             drawBottomTri(extraRows);
         }
-        addColorStats();        
-        drawBlanket();
-        calculatePercent();
+        addColorStats();
+        getColorInput();
+        drawBlanket();        
         console.log(colorStats);
         console.log(colorArea);
         console.log(colorPercents);
