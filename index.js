@@ -10,7 +10,8 @@ window.addEventListener("load", function () {
         const degreeDiff = (tempMax - tempMin)/numColors;
         const yarnColors = [];
         let neutralColor = $("#neutralColor").val();
-        const triStepSize = 5;
+        let triStepSize = 0;
+        let daySize = 4;
         const scaleFactor = 1;
         const colorStats = {};
         const colorArea = {};    
@@ -23,9 +24,22 @@ window.addEventListener("load", function () {
         $("#submitButton").click(function() {
             getColorInput();
             neutralColor = $("#neutralColor").val();
-            drawBlanket();
+            drawBlanket(checkNeutralOptions());
             calculatePercent();
         });
+        
+        function checkNeutralOptions() {
+            const isChecked = {};
+            $("input[type='checkbox']").each(function(index, color) {
+                if($(color).prop("checked")) {
+                    isChecked[$(color).val()] = true;
+                } else {
+                    isChecked[$(color).val()] = false;
+                }
+            });
+            console.log(isChecked);
+            return isChecked;
+        }
         
         function getColorInput() {
             $("#colors input").each(function(index, color) {
@@ -82,26 +96,34 @@ window.addEventListener("load", function () {
             canvas.fill();
         }
         
-        function checkMonthEnd(i, extraRows, increase) {
+        function checkMonthEnd(i, extraRows, options, increase) {
             const today = days[i]["CST"].split("-");
+            let rowNum;
+            
+            if (options.dayRow) {
+                rowNum = 4;
+            } else {
+                rowNum = 3;
+            }
+            
             if (days[i + 1]) {
                 const tomorrow = days[i + 1]["CST"].split("-");
                 if (parseInt(today[1]) < parseInt(tomorrow[1])) {
                     if (increase) {
-                    drawRhombus(4, neutralColor, i, extraRows, true); 
+                    drawRhombus(rowNum, neutralColor, i, extraRows, true); 
                     } else {
-                        drawRhombus(4, neutralColor, i, extraRows, false);
+                        drawRhombus(rowNum, neutralColor, i, extraRows, false);
                     }
                     return 1;
                 }
             } else {
-                drawRhombus(4, neutralColor, i, extraRows, false);
+                drawRhombus(rowNum, neutralColor, i, extraRows, false);
                 return 1;
             }
             return 0;
         }
         
-        function createRow(i, extraRows, shape) {
+        function createRow(i, extraRows, options, shape) {
             let row1Temp = "Min TemperatureF";
             let row2Temp = "Max TemperatureF";
             let increase = true;
@@ -121,20 +143,27 @@ window.addEventListener("load", function () {
             
             if (shape === "increase" || shape === "decrease") {
                 drawRhombus(2, color2, i, extraRows, increase);
-            } else if (shape === "middle") {
+            } else if (shape === "middle" && options.dayRow) {
                 drawMiddle(2, color2, i, extraRows);
                 increase = false;
+            } else if (shape === "middle" && !options.dayRow) {
+                drawRhombus(2, color2, i, extraRows);
             }
             
-            colorStats[neutralColor]++;
-            drawRhombus(3, neutralColor, i, extraRows, increase);
+            if (options.dayRow) {
+                colorStats[neutralColor]++;
+                drawRhombus(3, neutralColor, i, extraRows, increase);
+            }
             
-            extraRows += checkMonthEnd(i, extraRows, increase);
+            if (options.monthRow) {
+                extraRows += checkMonthEnd(i, extraRows, options, increase);
+            }
+            
             return extraRows;
         }
        
         function drawMiddle(rowNum, color, i, extraRows) {
-            const dayOffset = i * 6;
+            const dayOffset = i * daySize;
             const extraLines = 2 * extraRows;
             const topX = triStepSize + dayOffset + extraLines + 2 * (rowNum - 1);
             const topY = triStepSize + dayOffset + extraLines + 2 * (rowNum - 1);
@@ -157,9 +186,9 @@ window.addEventListener("load", function () {
         }
         
         function drawRhombus(rowNum, color, i, extraRows, increase) {
-            const dayOffsetY = i * 6;
+            const dayOffsetY = i * daySize;
             const extraLines = 2 * extraRows;
-            let dayOffsetX = i * 6;
+            let dayOffsetX = i * daySize;
             let topX = triStepSize + dayOffsetX + extraLines + 2 * (rowNum - 1);
             let topY = triStepSize + dayOffsetY + extraLines + 2 * (rowNum - 1);
             let bottomX = triStepSize + dayOffsetX + extraLines + 2 * rowNum;
@@ -168,13 +197,13 @@ window.addEventListener("load", function () {
             if (increase) {
                 calculateArea(topX, color);
             } else {
-                dayOffsetX = (days.length - i) * 6;
+                dayOffsetX = (days.length - i) * daySize;
                 if (extraRows < 7) {
                     topX = triStepSize + dayOffsetX + extraLines - 2 * (rowNum - 1);
                     bottomX = triStepSize + dayOffsetX + extraLines - 2 * rowNum;
                 } else {
-                    topX = triStepSize + dayOffsetX + 2 * (12 - extraRows) - 2 * (rowNum - 1);
-                    bottomX = triStepSize + dayOffsetX + 2 * (12 - extraRows) - 2 * rowNum;
+                    topX = triStepSize + dayOffsetX + 2 * (2 * daySize - extraRows) - 2 * (rowNum - 1);
+                    bottomX = triStepSize + dayOffsetX + 2 * (2 * daySize - extraRows) - 2 * rowNum;
                 }
                 calculateArea(bottomX, color);
             }
@@ -189,7 +218,7 @@ window.addEventListener("load", function () {
          }
         
         function drawBottomTri(extraRows) {
-            const topY = triStepSize + (days.length * 6) + 2 * extraRows;
+            const topY = triStepSize + (days.length * daySize) + 2 * extraRows;
             canvas.beginPath();
             canvas.moveTo(-triStepSize, topY);
             canvas.lineTo(0, topY + 5);
@@ -198,24 +227,34 @@ window.addEventListener("load", function () {
             canvas.fill();
         }
         
-        function drawBlanket() {
-            // this is to draw a bias blanket with 1 row max, 1 row min, 1 row between days, 2 rows between months
+        function drawBlanket(options) {
+            // this is to draw a bias blanket 
             let extraRows = 0;
-            drawTopTri();
+            if (options.triangleCaps) {
+                triStepSize = 5;
+                drawTopTri();
+            }
+            
+            if (options.dayRow) {
+                daySize = 6;
+            }
+            
             for (let i = 0; i < days.length; i++) {
                 if (i < (days.length - 1) / 2) {
-                    extraRows = createRow(i, extraRows, "increase");
+                    extraRows = createRow(i, extraRows, options, "increase");
                 } else if (i === (days.length - 1) / 2) {
-                    extraRows = createRow(i, extraRows, "middle");
+                    extraRows = createRow(i, extraRows, options, "middle");
                 } else {
-                    extraRows = createRow(i, extraRows, "decrease");
+                    extraRows = createRow(i, extraRows, options, "decrease");
                 }
             }
-            drawBottomTri(extraRows);
+            if (options.triangleCaps) {
+                drawBottomTri(extraRows);
+            }
         }
         addColorStats();
         getColorInput();
-        drawBlanket();        
+        drawBlanket(checkNeutralOptions());        
         console.log(colorStats);
         console.log(colorArea);
         console.log(colorPercents);
