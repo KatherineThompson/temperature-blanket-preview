@@ -18,7 +18,6 @@ module.exports = {
                 query: { presets: ["es2015"]}
             }
         ]
-        // noParse: [/foundation-apps/, /lodash/, /angular.js$/]    
     },
     devtool: "inline-source-map"
 };

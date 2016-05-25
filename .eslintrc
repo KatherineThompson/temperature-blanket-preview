@@ -1,0 +1,21 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "impliedStrict": true
+        }
+    },
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "jquery": true,
+        "node": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+        "max-len": ["error", 120],
+        "no-console": "warn"
+    }
+}
