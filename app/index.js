@@ -1,8 +1,8 @@
-"use strict"
+"use strict";
 
 window.addEventListener("load", function () {
-    
-    $.getJSON("wileyPost.json", function(days) {
+    debugger;   
+    $.getJSON("./data/wileyPost.json", function(days) {
         // Eventually, these will be gathered from the data or user
         const tempMin = 5;
         const tempMax = 104;

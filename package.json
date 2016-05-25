@@ -1,0 +1,25 @@
+{
+  "name": "temperature-blanket-preview",
+  "version": "1.0.0",
+  "description": "A webapp to aid in choosing colors for a knitted/crocheted blanket using weather data from a specific location to plot out the colors",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --progress --colors",
+    "build-js-watch": "webpack-dev-server --progress --colors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KatherineThompson/temperature-blanket-preview.git"
+  },
+  "author": "Katherine Thompson <ket29@cornell.edu>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/KatherineThompson/temperature-blanket-preview/issues"
+  },
+  "homepage": "https://github.com/KatherineThompson/temperature-blanket-preview#readme",
+  "devDependencies": {
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.14.1"
+  }
+}
