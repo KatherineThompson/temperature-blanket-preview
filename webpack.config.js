@@ -2,8 +2,7 @@
 const path = require("path");
 
 module.exports = {
-    // entry: path.join(__dirname, "app", "index.js"),
-    entry: "./app/index.js",
+    entry: path.join(__dirname, "app", "index.js"),
     output: {
        path: path.join(__dirname, "dist"),
        filename: "built.js",
