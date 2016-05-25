@@ -1,7 +1,6 @@
 "use strict";
 
 window.addEventListener("load", function () {
-    debugger;   
     $.getJSON("./data/wileyPost.json", function(days) {
         // Eventually, these will be gathered from the data or user
         const tempMin = 5;
