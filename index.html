@@ -8,73 +8,84 @@
         <title>Temperature Blanket Preview</title>
     </head>
     <body>
-        <h1>Temperature Blanket Preview</h1>
-        <form id="location">
-            <label for="zipCode">Zip Code:</label>
-            <input type="text" name="zipCode">
-                        
-            <label for="startDate">Start Date:</label>
-            <input type="date" name="startDate">
-            
-            <label for="endDate">End Date:</label>
-            <input type="date" name="endDate">
-            
-        </form>
-        
-        <form id="colors">
-            <label for="color">Color 1:</label>
-            <input type="color" value="#332546">
-            
-            <label for="color">Color 2:</label>
-            <input type="color" value="#624070">
-            
-            <label for="color">Color 3:</label>
-            <input type="color" value="#4B4D6B">
-            
-            <label for="color">Color 4:</label>
-            <input type="color" value="#074771">
-            
-            <label for="color">Color 5:</label>
-            <input type="color" value="#31473D">
-                        
-            <label for="color">Color 6:</label>
-            <input type="color" value="#48634C">
-                        
-            <label for="color">Color 7:</label>
-            <input type="color" value="#EBC05B">
-                        
-            <label for="color">Color 8:</label>
-            <input type="color" value="#D56133">
-                        
-            <label for="color">Color 9:</label>
-            <input type="color" value="#9D1F33">
-                        
-            <label for="color">Color 10:</label>
-            <input type="color" value="#7C1623">
-        </form>
-        
-        <form id="neutralForm">
-            <label for="neutralColor">Add an additional color:</label>
-            <input type="color" value="#6C7073" id="neutralColor">
-            
-            <div>
-            
-                <input type="checkbox" name="neutralOptions" value="dayRow" checked>
-                <label for="dayRow">As an extra row between each day</label>
+        <div class="vertical grid-frame">
+  
+            <div class="title-bar">
+                <div class="center title">Temperature Blanket Preview</div>
             </div>
             
-            <div>
-                <input type="checkbox" name="neutralOptions" value="monthRow" checked>
-                <label for="monthRow">As an extra row between each month</label>
+            <div class="grid-block">
+                <div class="vertical large-3 grid-block">
+                    <form id="location">
+                        <label for="zipCode">Zip Code:</label>
+                        <input type="text" name="zipCode">
+                                    
+                        <label for="startDate">Start Date:</label>
+                        <input type="date" name="startDate">
+                        
+                        <label for="endDate">End Date:</label>
+                        <input type="date" name="endDate">
+                        
+                    </form>
+
+                    <form id="colors">
+                        <label for="color">Color 1:</label>
+                        <input type="color" value="#332546">
+                        
+                        <label for="color">Color 2:</label>
+                        <input type="color" value="#624070">
+                        
+                        <label for="color">Color 3:</label>
+                        <input type="color" value="#4B4D6B">
+                        
+                        <label for="color">Color 4:</label>
+                        <input type="color" value="#074771">
+                        
+                        <label for="color">Color 5:</label>
+                        <input type="color" value="#31473D">
+                                    
+                        <label for="color">Color 6:</label>
+                        <input type="color" value="#48634C">
+                                    
+                        <label for="color">Color 7:</label>
+                        <input type="color" value="#EBC05B">
+                                    
+                        <label for="color">Color 8:</label>
+                        <input type="color" value="#D56133">
+                                    
+                        <label for="color">Color 9:</label>
+                        <input type="color" value="#9D1F33">
+                                    
+                        <label for="color">Color 10:</label>
+                        <input type="color" value="#7C1623">
+                    </form>
+
+                    <form id="neutralForm">
+                        <label for="neutralColor">Add an additional color:</label>
+                        <input type="color" value="#6C7073" id="neutralColor">
+                        
+                        <div>
+                        
+                            <input type="checkbox" name="neutralOptions" value="dayRow" checked>
+                            <label for="dayRow">As an extra row between each day</label>
+                        </div>
+                        
+                        <div>
+                            <input type="checkbox" name="neutralOptions" value="monthRow" checked>
+                            <label for="monthRow">As an extra row between each month</label>
+                        </div>
+                        <div>    
+                            <input type="checkbox" name="neutralOptions" value="triangleCaps" checked>
+                            <label for="triangleCaps">As the first and last rows</label>
+                    </div>
+                    </form>
+                    
+                    <button id="submitButton">Submit</button>
+                </div>
+                <div class="grid-block large-9">        
+                    <canvas id="canvas" height="2400" width="2400">Visualization of weather data as a knitted or crocheted blanket</canvas>
+                </div>
             </div>
-            <div>    
-                <input type="checkbox" name="neutralOptions" value="triangleCaps" checked>
-                <label for="triangleCaps">As the first and last rows</label>
-           </div>
-        </form>
-        
-        <button id="submitButton">Submit</button>
-        
-        <canvas id="canvas" height="2400" width="2400">Visualization of weather data as a knitted or crocheted blanket</canvas>
+        </div>
     </body>
 </html>

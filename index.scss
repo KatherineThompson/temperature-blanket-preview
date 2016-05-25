@@ -1,4 +1,6 @@
 @import "foundation";
+$breakpoints: map-merge($breakpoints, (large: 1025px));
+
 @import url(https://fonts.googleapis.com/css?family=Lobster);
 
 canvas {
@@ -6,9 +8,10 @@ canvas {
     margin-top: 20px;
 }
 
-h1 {
+.center.title {
     font-family: "lobster";
     color: deeppink;
+    font-size: 1.5em;
 }
 
 label {
