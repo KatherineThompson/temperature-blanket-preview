@@ -14,7 +14,7 @@
                     <div class="title-bar">
                         <div class="center title">Temperature Blanket Preview</div>
                     </div>
-                    <div class="grid-block" id="location-menu">
+                    <div class="shrink grid-block" id="location-menu">
                         <form id="location">
                             <label for="location">Location</label>
                             <select id="location">
@@ -25,12 +25,17 @@
                     </div>
                     <div class="grid-block" id="color-menu">
                         <form id="colors">
-                            <div class="small-up-2 grid-block"> 
-                                <div class="grid-block">
-                                    <label for="color">Color 1:</label>
-                                    <input type="color" value="#332546">
+                            <div class="grid-block" id="num-colors">
+                                <label for="range">Number of colors:</label>
+                                <input type="range" min="1" max="16" ng-model="blanketParams.numColors">
+                            </div> 
+                            <div class="small-up-2 grid-block">
+                                <p>Please choose colors in order from coldest temperature to hottest</p>
+                                <div class="grid-block" ng-repeat="color in blanketParams.colors">
+                                    <label for="color">Color {{$index + 1}}:</label>
+                                    <input type="color" value="{{blanketParams.colors[$index]}}">
                                 </div>
-                                
+<!--                                
                                 <div class="grid-block">
                                     <label for="color">Color 2:</label>
                                     <input type="color" value="#624070">
@@ -74,7 +79,7 @@
                                 <div class="grid-block">
                                     <label for="color">Color 10:</label>
                                     <input type="color" value="#7C1623">
-                                </div>
+                                </div>-->
                             </div>
                         </form>
                     </div>
@@ -100,7 +105,7 @@
                                 </div>
                             </form>
                             
-                            <button id="submitButton" class="expand button">Submit</button>
+                            <button id="submit-button" class="expand button" ng-click="updateOptions()">Submit</button>
                     </div>
                 </div>
                 <div id="canvas-div" class="grid-block small-9">        

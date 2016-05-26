@@ -5473,14 +5473,14 @@ blockquote p {
 label {
   font-family: Arial, Helvetica, sans-serif; }
 
-#submitButton {
+#submit-button {
   margin-top: 1em;
   background-color: deeppink; }
 
 #canvas-div {
   overflow: scroll; }
 
-#neutral-menu, #location-menu {
+#neutral-menu, #location-menu, #num-colors, p {
   padding-left: 0.5em;
   padding-right: 0.5em; }
 

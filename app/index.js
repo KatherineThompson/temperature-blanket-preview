@@ -1,6 +1,7 @@
 "use strict";
 
 const angular = require("angular");
+const _ = require("lodash");
 
 angular.module("temperature-blanket", [])
     .controller("TemperatureBlanketCtrl", function($scope, getWeatherData) {
@@ -19,17 +20,48 @@ angular.module("temperature-blanket", [])
         const colorStats = {};
         const colorArea = {};    
         const colorPercents = {};  
+        $scope.defaultColors = [
+                "#332546",
+                "#624070",
+                "#4B4D6B",
+                "#074771",
+                "#31473D",
+                "#48634C",
+                "#EBC05B",
+                "#D56133",
+                "#9D1F33",
+                "#7C1623",
+                "#000000",
+                "#333333",
+                "#666666",
+                "#aaaaaa",
+                "#dddddd",
+                "#ffffff"
+        ];
+        $scope.blanketParams = {
+            numColors: 10,
+            colors: []
+        };
+        
+        function matchDefaultColors() {
+            _.range($scope.blanketParams.colors.length, $scope.blanketParams.numColors)
+                .forEach(num => $scope.blanketParams.colors.push($scope.defaultColors[num]));
+        }
+        
+        $scope.$watch($scope.blanketParams.numColors, () => {
+            matchDefaultColors();
+        }, true);
         
         const canvas = document.getElementById("canvas").getContext("2d");
         canvas.scale(scaleFactor, scaleFactor);
         canvas.translate(1200, 0);
         
-        $("#submitButton").click(function() {
+        $scope.updateOptions = function() {
             getColorInput();
             neutralColor = $("#neutralColor").val();
             drawBlanket(checkNeutralOptions());
             calculatePercent();
-        });
+        }
         
         function checkNeutralOptions() {
             const isChecked = {};

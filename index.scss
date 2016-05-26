@@ -15,7 +15,7 @@ label {
     font-family: Arial, Helvetica, sans-serif;
 }
  
- #submitButton {
+ #submit-button {
      margin-top: 1em;
      background-color: $accent-color;
  }
@@ -24,7 +24,7 @@ label {
      overflow: scroll;
  }
  
- #neutral-menu {
+ #neutral-menu, #num-colors, p {
      padding-left: 0.5em;
      padding-right: 0.5em;
  }
