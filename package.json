@@ -26,6 +26,7 @@
     "babel-preset-es2015": "^6.9.0",
     "eslint": "^2.10.2",
     "foundation-apps": "^1.2.0",
+    "lodash": "^4.13.1",
     "node-sass": "^3.7.0",
     "node-static": "^0.7.7",
     "tap-difflet": "^0.4.0",

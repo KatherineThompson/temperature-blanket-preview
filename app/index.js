@@ -1,7 +1,12 @@
 "use strict";
 
-window.addEventListener("load", function () {
-    $.getJSON("./data/wileyPost.json", function(days) {
+const angular = require("angular");
+// const _ = require("lodash");
+
+angular.module("temperature-blanket", [])
+    .controller("TemperatureBlanketCtrl", function($scope, getWeatherData) {
+    
+    getWeatherData().then(function(days) {
         // Eventually, these will be gathered from the data or user
         const tempMin = 5;
         const tempMax = 104;
@@ -15,17 +20,38 @@ window.addEventListener("load", function () {
         const colorStats = {};
         const colorArea = {};    
         const colorPercents = {};  
+
+        $scope.blanketParams = {
+            numColors: 10,
+            colors: [
+                "#332546",
+                "#624070",
+                "#4B4D6B",
+                "#074771",
+                "#31473D",
+                "#48634C",
+                "#EBC05B",
+                "#D56133",
+                "#9D1F33",
+                "#7C1623",
+                "#000000",
+                "#666666",
+                "#aaaaaa",
+                "#dddddd",
+                "#ffffff"
+            ]
+        };
         
         const canvas = document.getElementById("canvas").getContext("2d");
         canvas.scale(scaleFactor, scaleFactor);
         canvas.translate(1200, 0);
         
-        $("#submitButton").click(function() {
+        $scope.updateOptions = function() {
             getColorInput();
             neutralColor = $("#neutralColor").val();
             drawBlanket(checkNeutralOptions());
             calculatePercent();
-        });
+        }; 
         
         function checkNeutralOptions() {
             const isChecked = {};
@@ -258,4 +284,6 @@ window.addEventListener("load", function () {
         console.log(colorArea);
         console.log(colorPercents);
     });
-})
+});
+
+require("./get-weather-data");

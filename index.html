@@ -7,82 +7,64 @@
         <script src="./dist/built.js"></script>
         <title>Temperature Blanket Preview</title>
     </head>
-    <body>
+    <body ng-app="temperature-blanket" ng-controller="TemperatureBlanketCtrl">
         <div class="vertical grid-frame">
-  
-            <div class="title-bar">
-                <div class="center title">Temperature Blanket Preview</div>
-            </div>
-            
             <div class="grid-block">
-                <div class="vertical large-3 grid-block">
-                    <form id="location">
-                        <label for="zipCode">Zip Code:</label>
-                        <input type="text" name="zipCode">
-                                    
-                        <label for="startDate">Start Date:</label>
-                        <input type="date" name="startDate">
-                        
-                        <label for="endDate">End Date:</label>
-                        <input type="date" name="endDate">
-                        
-                    </form>
-
-                    <form id="colors">
-                        <label for="color">Color 1:</label>
-                        <input type="color" value="#332546">
-                        
-                        <label for="color">Color 2:</label>
-                        <input type="color" value="#624070">
-                        
-                        <label for="color">Color 3:</label>
-                        <input type="color" value="#4B4D6B">
-                        
-                        <label for="color">Color 4:</label>
-                        <input type="color" value="#074771">
-                        
-                        <label for="color">Color 5:</label>
-                        <input type="color" value="#31473D">
-                                    
-                        <label for="color">Color 6:</label>
-                        <input type="color" value="#48634C">
-                                    
-                        <label for="color">Color 7:</label>
-                        <input type="color" value="#EBC05B">
-                                    
-                        <label for="color">Color 8:</label>
-                        <input type="color" value="#D56133">
-                                    
-                        <label for="color">Color 9:</label>
-                        <input type="color" value="#9D1F33">
-                                    
-                        <label for="color">Color 10:</label>
-                        <input type="color" value="#7C1623">
-                    </form>
-
-                    <form id="neutralForm">
-                        <label for="neutralColor">Add an additional color:</label>
-                        <input type="color" value="#6C7073" id="neutralColor">
-                        
-                        <div>
-                        
-                            <input type="checkbox" name="neutralOptions" value="dayRow" checked>
-                            <label for="dayRow">As an extra row between each day</label>
-                        </div>
-                        
-                        <div>
-                            <input type="checkbox" name="neutralOptions" value="monthRow" checked>
-                            <label for="monthRow">As an extra row between each month</label>
-                        </div>
-                        <div>    
-                            <input type="checkbox" name="neutralOptions" value="triangleCaps" checked>
-                            <label for="triangleCaps">As the first and last rows</label>
+                <div id="options" class="vertical small-3 grid-block">
+                    <div class="title-bar">
+                        <div class="center title">Temperature Blanket Preview</div>
                     </div>
-                    </form>
-                    
-                    <button id="submitButton">Submit</button>
+                    <div class="shrink grid-block" id="location-menu">
+                        <form id="location">
+                            <label for="location">Location</label>
+                            <select id="location">
+                                <option value="edmond">Edmond, OK 2015</option>
+                                <option value="wileyPost">Wiley Post Airport, OK 2015</option>
+                            </select>
+                        </form>
+                    </div>
+                    <div class="grid-block" id="color-menu">
+                        <form id="colors">
+                            <div class="grid-block" id="num-colors">
+                                <label for="range">Number of colors:</label>
+                                <input type="range" min="1" max="15" ng-model="blanketParams.numColors">
+                            </div> 
+                            <div class="small-up-3 grid-block">
+                                <p>Please choose colors in order from coldest temperature to hottest</p>
+                                <div class="shrink grid-block"
+                                    ng-repeat="color in blanketParams.colors | limitTo : blanketParams.numColors">
+                                    <label for="color">Color {{$index + 1}}:</label>
+                                    <input type="color" ng-model="blanketParams.colors[$index]">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                        
+                        <div class="vertical grid-block" id="neutral-menu">
+                            <form id="neutralForm">
+                                <label for="neutralColor">Add an additional color...</label>
+                                <input type="color" value="#6C7073" id="neutralColor">
+                                
+                                <div>
+                                
+                                    <input type="checkbox" name="neutralOptions" value="dayRow" checked>
+                                    <label for="dayRow">...as an extra row between each day</label>
+                                </div>
+                                
+                                <div>
+                                    <input type="checkbox" name="neutralOptions" value="monthRow" checked>
+                                    <label for="monthRow">...as an extra row between each month</label>
+                                </div>
+                                <div>    
+                                    <input type="checkbox" name="neutralOptions" value="triangleCaps" checked>
+                                    <label for="triangleCaps">...as the first and last rows</label>
+                                </div>
+                            </form>
+                            
+                            <button id="submit-button" class="expand button" ng-click="updateOptions()">Submit</button>
+                    </div>
                 </div>
-                <div id="canvas-div" class="grid-block large-9">        
+                <div id="canvas-div" class="grid-block small-9">        
                     <canvas id="canvas" height="2400" width="2400">Visualization of weather data as a knitted or crocheted blanket</canvas>
                 </div>
             </div>
