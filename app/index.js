@@ -50,12 +50,11 @@ angular.module("temperature-blanket", [])
                     .forEach(num => $scope.blanketParams.colors.push($scope.defaultColors[num]));
             } else {
                 _.range($scope.blanketParams.colors.length - $scope.blanketParams.numColors)
-                    .forEach(num => $scope.blanketParams.colors.pop());
+                    .forEach(() => $scope.blanketParams.colors.pop());
             }
-        }
+        };
         
         $scope.matchDefaultColors();
-        
         
         const canvas = document.getElementById("canvas").getContext("2d");
         canvas.scale(scaleFactor, scaleFactor);
@@ -66,7 +65,7 @@ angular.module("temperature-blanket", [])
             neutralColor = $("#neutralColor").val();
             drawBlanket(checkNeutralOptions());
             calculatePercent();
-        }
+        }; 
         
         function checkNeutralOptions() {
             const isChecked = {};
