@@ -16,6 +16,17 @@
     "extends": "eslint:recommended",
     "rules": {
         "max-len": ["error", 120],
-        "no-console": "warn"
+        "no-console": "warn",
+        "curly": "error",
+        "dot-notation": "error",
+        "eqeqeq": "error",
+        "no-else-return": "warn",
+        "no-self-compare": "error",
+        "no-var": "error",
+        "prefer-const": "error",
+        "prefer-rest-params": "error",
+        "prefer-spread": "error",
+        "no-multiple-empty-lines": "error",
+        "key-spacing": "error"
     }
 }

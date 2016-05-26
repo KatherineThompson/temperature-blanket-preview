@@ -6,7 +6,7 @@ module.exports = {
     output: {
        path: path.join(__dirname, "dist"),
        filename: "built.js",
-       publicPath:"/dist"
+       publicPath: "/dist"
     },
     module: {
         loaders: [

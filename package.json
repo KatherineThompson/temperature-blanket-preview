@@ -4,7 +4,7 @@
   "description": "A webapp to aid in choosing colors for a knitted/crocheted blanket using weather data from a specific location to plot out the colors",
   "main": "index.js",
   "scripts": {
-    "test": "eslint -c .eslintrc app && tape tests/*.test.js | tap-difflet && npm run build",
+    "test": "eslint -c .eslintrc app tests webpack.config.js && tape tests/*.test.js | tap-difflet && npm run build",
     "start": "static -a 0.0.0.0",
     "build": "node-sass --include-path node_modules/foundation-apps/scss index.scss dist/built.css && webpack --progress --colors",
     "build-js-watch": "webpack-dev-server --progress --colors",

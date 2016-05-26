@@ -65,11 +65,11 @@ window.addEventListener("load", function () {
         
         function calculatePercent() {
             let total = 0;
-            for (let property in colorArea) {
+            for (const property in colorArea) {
                 total += colorArea[property];
             }
             
-            for (let property in colorPercents) {
+            for (const property in colorPercents) {
                 colorPercents[property] = Math.round((colorArea[property] / total) * 10000) / 100;
             }
         }
@@ -96,7 +96,7 @@ window.addEventListener("load", function () {
         }
         
         function checkMonthEnd(i, extraRows, options, increase) {
-            const today = days[i]["CST"].split("-");
+            const today = days[i].CST.split("-");
             let rowNum;
             
             if (options.dayRow) {
@@ -106,7 +106,7 @@ window.addEventListener("load", function () {
             }
             
             if (days[i + 1]) {
-                const tomorrow = days[i + 1]["CST"].split("-");
+                const tomorrow = days[i + 1].CST.split("-");
                 if (parseInt(today[1]) < parseInt(tomorrow[1])) {
                     if (increase) {
                     drawRhombus(rowNum, neutralColor, i, extraRows, true); 
@@ -189,9 +189,9 @@ window.addEventListener("load", function () {
             const extraLines = 2 * extraRows;
             let dayOffsetX = i * daySize;
             let topX = triStepSize + dayOffsetX + extraLines + 2 * (rowNum - 1);
-            let topY = triStepSize + dayOffsetY + extraLines + 2 * (rowNum - 1);
+            const topY = triStepSize + dayOffsetY + extraLines + 2 * (rowNum - 1);
             let bottomX = triStepSize + dayOffsetX + extraLines + 2 * rowNum;
-            let bottomY = triStepSize + dayOffsetY + extraLines + 2 * rowNum;
+            const bottomY = triStepSize + dayOffsetY + extraLines + 2 * rowNum;
                     
             if (increase) {
                 calculateArea(topX, color);
