@@ -5466,8 +5466,7 @@ blockquote p {
   float: none; }
 
 canvas {
-  border: thin solid black;
-  margin-top: 20px; }
+  border: thin solid black; }
 
 .center.title {
   font-family: "lobster";

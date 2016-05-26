@@ -5,7 +5,6 @@ $breakpoints: map-merge($breakpoints, (large: 1025px));
 
 canvas {
     border: thin solid black;
-    margin-top: 20px;
 }
 
 .center.title {
