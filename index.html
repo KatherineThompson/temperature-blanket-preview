@@ -27,59 +27,15 @@
                         <form id="colors">
                             <div class="grid-block" id="num-colors">
                                 <label for="range">Number of colors:</label>
-                                <input type="range" min="1" max="15" ng-model="blanketParams.numColors" ng-change="matchDefaultColors()">
+                                <input type="range" min="1" max="15" ng-model="blanketParams.numColors">
                             </div> 
                             <div class="small-up-3 grid-block">
                                 <p>Please choose colors in order from coldest temperature to hottest</p>
-                                <div class="shrink grid-block" ng-repeat="color in blanketParams.colors">
+                                <div class="shrink grid-block"
+                                    ng-repeat="color in blanketParams.colors | limitTo : blanketParams.numColors">
                                     <label for="color">Color {{$index + 1}}:</label>
-                                    <input type="color" value="{{blanketParams.colors[$index]}}">
+                                    <input type="color" ng-model="blanketParams.colors[$index]">
                                 </div>
-<!--                                
-                                <div class="grid-block">
-                                    <label for="color">Color 2:</label>
-                                    <input type="color" value="#624070">
-                                </div>
-                                
-                                <div class="grid-block">
-                                    <label for="color">Color 3:</label>
-                                    <input type="color" value="#4B4D6B">
-                                </div>
-                                    
-                                <div class="grid-block">
-                                    <label for="color">Color 4:</label>
-                                    <input type="color" value="#074771">
-                                </div>
-                                    
-                                <div class="grid-block">
-                                    <label for="color">Color 5:</label>
-                                    <input type="color" value="#31473D">
-                                </div>
-                                                
-                                <div class="grid-block">
-                                    <label for="color">Color 6:</label>
-                                    <input type="color" value="#48634C">
-                                </div>
-                                                
-                                <div class="grid-block">
-                                    <label for="color">Color 7:</label>
-                                    <input type="color" value="#EBC05B">
-                                </div>
-                                                
-                                <div class="grid-block">
-                                    <label for="color">Color 8:</label>
-                                    <input type="color" value="#D56133">
-                                </div>
-                                                
-                                <div class="grid-block">
-                                    <label for="color">Color 9:</label>
-                                    <input type="color" value="#9D1F33">
-                                </div>
-                                                
-                                <div class="grid-block">
-                                    <label for="color">Color 10:</label>
-                                    <input type="color" value="#7C1623">
-                                </div>-->
                             </div>
                         </form>
                     </div>

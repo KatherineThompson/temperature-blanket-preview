@@ -37,7 +37,11 @@ label {
 #color-menu label {
     padding-right: 0.5em;
 }
- 
+
+#colors {
+     min-height: 453px;
+}
+
 #options {
      border-right: 1px solid $accent-color;
 }
