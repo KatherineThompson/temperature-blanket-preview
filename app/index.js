@@ -38,19 +38,24 @@ angular.module("temperature-blanket", [])
                 "#dddddd",
                 "#ffffff"
         ];
+        
         $scope.blanketParams = {
             numColors: 10,
             colors: []
         };
         
-        function matchDefaultColors() {
-            _.range($scope.blanketParams.colors.length, $scope.blanketParams.numColors)
-                .forEach(num => $scope.blanketParams.colors.push($scope.defaultColors[num]));
+        $scope.matchDefaultColors = function() {
+            if ($scope.blanketParams.colors.length <= $scope.blanketParams.numColors) {
+                _.range($scope.blanketParams.colors.length, $scope.blanketParams.numColors)
+                    .forEach(num => $scope.blanketParams.colors.push($scope.defaultColors[num]));
+            } else {
+                _.range($scope.blanketParams.colors.length - $scope.blanketParams.numColors)
+                    .forEach(num => $scope.blanketParams.colors.pop());
+            }
         }
         
-        $scope.$watch($scope.blanketParams.numColors, () => {
-            matchDefaultColors();
-        }, true);
+        $scope.matchDefaultColors();
+        
         
         const canvas = document.getElementById("canvas").getContext("2d");
         canvas.scale(scaleFactor, scaleFactor);

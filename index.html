@@ -27,7 +27,7 @@
                         <form id="colors">
                             <div class="grid-block" id="num-colors">
                                 <label for="range">Number of colors:</label>
-                                <input type="range" min="1" max="16" ng-model="blanketParams.numColors">
+                                <input type="range" min="1" max="16" ng-model="blanketParams.numColors" ng-change="matchDefaultColors()">
                             </div> 
                             <div class="small-up-2 grid-block">
                                 <p>Please choose colors in order from coldest temperature to hottest</p>
