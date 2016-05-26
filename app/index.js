@@ -1,7 +1,7 @@
 "use strict";
 
 const angular = require("angular");
-const _ = require("lodash");
+// const _ = require("lodash");
 
 angular.module("temperature-blanket", [])
     .controller("TemperatureBlanketCtrl", function($scope, getWeatherData) {
