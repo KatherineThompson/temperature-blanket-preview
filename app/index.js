@@ -1,7 +1,11 @@
 "use strict";
 
-window.addEventListener("load", function () {
-    $.getJSON("./data/wileyPost.json", function(days) {
+const angular = require("angular");
+
+angular.module("temperature-blanket", [])
+    .controller("TemperatureBlanketCtrl", function($scope, getWeatherData) {
+    
+    getWeatherData().then(function(days) {
         // Eventually, these will be gathered from the data or user
         const tempMin = 5;
         const tempMax = 104;
@@ -258,4 +262,6 @@ window.addEventListener("load", function () {
         console.log(colorArea);
         console.log(colorPercents);
     });
-})
+});
+
+require("./get-weather-data");

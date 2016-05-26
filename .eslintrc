@@ -27,6 +27,7 @@
         "prefer-rest-params": "error",
         "prefer-spread": "error",
         "no-multiple-empty-lines": "error",
-        "key-spacing": "error"
+        "key-spacing": "error",
+        "semi": "error"
     }
 }
