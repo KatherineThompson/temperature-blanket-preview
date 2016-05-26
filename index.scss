@@ -14,30 +14,34 @@ $accent-color: deeppink;
 label {
     font-family: Arial, Helvetica, sans-serif;
 }
- 
- #submit-button {
-     margin-top: 1em;
-     background-color: $accent-color;
- }
- 
+
+#submit-button {
+    margin-top: 1em;
+    background-color: $accent-color;
+}
+
 #canvas-div {
-     overflow: scroll;
- }
+    overflow: scroll;
+}
+
+#neutral-menu, #num-colors, p {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
  
- #neutral-menu, #num-colors, p {
-     padding-left: 0.5em;
-     padding-right: 0.5em;
- }
+#location-menu {
+    @extend #neutral-menu;
+    padding-top: 0.5em;
+}
+
+#color-menu label {
+    padding-right: 0.5em;
+}
  
- #location-menu {
-     @extend #neutral-menu;
-     padding-top: 0.5em;
- }
- 
- #color-menu label {
-     padding-right: 0.5em;
- }
- 
- #options {
+#options {
      border-right: 1px solid $accent-color;
- }
+}
+
+p {
+    line-height: 1em;
+}

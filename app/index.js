@@ -32,7 +32,6 @@ angular.module("temperature-blanket", [])
                 "#9D1F33",
                 "#7C1623",
                 "#000000",
-                "#333333",
                 "#666666",
                 "#aaaaaa",
                 "#dddddd",

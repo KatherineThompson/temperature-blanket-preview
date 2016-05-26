@@ -27,11 +27,11 @@
                         <form id="colors">
                             <div class="grid-block" id="num-colors">
                                 <label for="range">Number of colors:</label>
-                                <input type="range" min="1" max="16" ng-model="blanketParams.numColors" ng-change="matchDefaultColors()">
+                                <input type="range" min="1" max="15" ng-model="blanketParams.numColors" ng-change="matchDefaultColors()">
                             </div> 
-                            <div class="small-up-2 grid-block">
+                            <div class="small-up-3 grid-block">
                                 <p>Please choose colors in order from coldest temperature to hottest</p>
-                                <div class="grid-block" ng-repeat="color in blanketParams.colors">
+                                <div class="shrink grid-block" ng-repeat="color in blanketParams.colors">
                                     <label for="color">Color {{$index + 1}}:</label>
                                     <input type="color" value="{{blanketParams.colors[$index]}}">
                                 </div>

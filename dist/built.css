@@ -5492,3 +5492,6 @@ label {
 
 #options {
   border-right: 1px solid deeppink; }
+
+p {
+  line-height: 1em; }
