@@ -1,0 +1,39 @@
+{
+  "name": "temperature-blanket-preview",
+  "version": "1.0.0",
+  "description": "A webapp to aid in choosing colors for a knitted/crocheted blanket using weather data from a specific location to plot out the colors",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint -c .eslintrc app tests webpack.config.js && tape tests/*.test.js | tap-difflet && npm run build",
+    "start": "static -a 0.0.0.0",
+    "build": "node-sass --include-path node_modules/foundation-apps/scss index.scss dist/built.css && webpack --progress --colors",
+    "build-js-watch": "webpack-dev-server --progress --colors",
+    "build-styles-watch": "node-sass -w --include-path node_modules/foundation-apps/scss index.scss dist/built.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KatherineThompson/temperature-blanket-preview.git"
+  },
+  "author": "Katherine Thompson <ket29@cornell.edu>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/KatherineThompson/temperature-blanket-preview/issues"
+  },
+  "homepage": "https://github.com/KatherineThompson/temperature-blanket-preview#readme",
+  "devDependencies": {
+    "babel-core": "^6.9.0",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.9.0",
+    "eslint": "^2.10.2",
+    "foundation-apps": "^1.2.0",
+    "node-sass": "^3.7.0",
+    "node-static": "^0.7.7",
+    "tap-difflet": "^0.4.0",
+    "tape": "^4.5.1",
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.14.1"
+  },
+  "dependencies": {
+    "angular": "^1.5.5"
+  }
+}

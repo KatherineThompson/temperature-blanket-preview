@@ -1,6 +1,4 @@
-"use strict"
-
-console.log("Hey! It's node!!!");
+"use strict";
 
 const fs = require("fs");
 fs.readFile(process.argv[2], "utf8", function(err, fileContents) {
