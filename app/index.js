@@ -4,15 +4,9 @@ const angular = require("angular");
 const _ = require("lodash");
 
 angular.module("temperature-blanket", [])
-    .controller("TemperatureBlanketCtrl", function($scope, getWeatherData, $window) {
+    .controller("TemperatureBlanketCtrl", function($scope, getWeatherData, $window, $document) {
     
     getWeatherData().then(function(days) {
-        const yarnColors = [];
-        const neutralColor = $("#neutralColor").val();
-        const colorStats = {};
-        const colorArea = {};    
-        const colorPercents = {};  
-        
         $scope.canvasDimensions = _.merge(getCanvasDimensions(), {scaleFactor: .5});
         
         $scope.weatherParams = {
@@ -49,12 +43,13 @@ angular.module("temperature-blanket", [])
             daySize: 6
         };
         
-        const canvas = document.getElementById("canvas").getContext("2d");
+        const canvas = $document[0].getElementById("canvas").getContext("2d");
         
         function getCanvasDimensions() {
+            const canvasDiv = $document[0].getElementById("canvas-div");
             return {
-                height: $window.innerHeight,
-                width: ($window.innerWidth / 12) * 9
+                height: canvasDiv.clientHeight,
+                width: canvasDiv.clientWidth
             };
         }
         
@@ -67,43 +62,20 @@ angular.module("temperature-blanket", [])
         $scope.$watch("[canvasDimensions.width, canvasDimensions.height]", () => {
             canvas.translate($scope.canvasDimensions.width / 2, 0);
             canvas.scale($scope.canvasDimensions.scaleFactor, $scope.canvasDimensions.scaleFactor);
-            drawBlanket();
+            drawBlanket(getDrawBlanketOpts());
         }, true);
         
         $scope.$watch("blanketParams", () => {
-            $scope.blanketParams.triStepSize = $scope.blanketParams.options.triangleCaps ? 5 : 0;
-            $scope.blanketParams.daySize = $scope.blanketParams.options.dayRow ? 6 : 4;
-            drawBlanket();
+            drawBlanket(getDrawBlanketOpts());
         }, true);
         
-        function addColorStats () {
-            for (let i = 0; i < yarnColors.length; i++) {
-                colorStats[yarnColors[i]] = 0;
-                colorArea[yarnColors[i]] = 0;
-                colorPercents[yarnColors[i]] = 0;
-            }
-            colorStats[neutralColor] = 0;
-            colorArea[neutralColor] = $scope.blanketParams.triStepSize * $scope.blanketParams.triStepSize * 2;
-            //provides the area of the top and bottom triangles
-            // a = h(b/2); h = triStepSize; b = 2 * triStepSize
-            colorPercents[neutralColor] = 0;
+        function getDrawBlanketOpts() {
+            return {
+                triStepSize: $scope.blanketParams.options.triangleCaps ? 5 : 0,
+                daySize: $scope.blanketParams.options.dayRow ? 6 : 4
+            };
         }
         
-        function calculateArea(smallerX, color) {
-            colorArea[color] += smallerX * 4;
-        }
-        
-        // function calculatePercent() {
-        //     let total = 0;
-        //     for (const property in colorArea) {
-        //         total += colorArea[property];
-        //     }
-            
-        //     for (const property in colorPercents) {
-        //         colorPercents[property] = Math.round((colorArea[property] / total) * 10000) / 100;
-        //     }
-        // }
-       
         function getColor(temp) {
             if (_.inRange(temp, $scope.weatherParams.tempMin, $scope.weatherParams.tempMax + 1)){
                 const degreeDiff = ($scope.weatherParams.tempMax - $scope.weatherParams.tempMin) /
@@ -118,16 +90,16 @@ angular.module("temperature-blanket", [])
             throw err;
         }
         
-        function drawTopTri() {
+        function drawTopTri(triStepSize) {
             canvas.beginPath();
             canvas.moveTo(0, 0);
-            canvas.lineTo(0 + $scope.blanketParams.triStepSize, $scope.blanketParams.triStepSize);
-            canvas.lineTo(0 - $scope.blanketParams.triStepSize, $scope.blanketParams.triStepSize);
+            canvas.lineTo(0 + triStepSize, triStepSize);
+            canvas.lineTo(0 - triStepSize, triStepSize);
             canvas.fillStyle = $scope.blanketParams.neutralColor;
             canvas.fill();
         }
         
-        function checkMonthEnd(i, extraRows, options, increase) {
+        function checkMonthEnd(i, extraRows, options, increase, opts) {
             const today = days[i].CST.split("-");
             const rowNum = $scope.blanketParams.options.dayRow ? 4 : 3;
             
@@ -135,57 +107,55 @@ angular.module("temperature-blanket", [])
                 const tomorrow = days[i + 1].CST.split("-");
                 if (parseInt(today[1]) < parseInt(tomorrow[1])) {
                     if (increase) {
-                    drawRhombus(rowNum, $scope.blanketParams.neutralColor, i, extraRows, true); 
+                    drawRhombus(rowNum, $scope.blanketParams.neutralColor, i, extraRows, true, opts); 
                     } else {
-                        drawRhombus(rowNum, $scope.blanketParams.neutralColor, i, extraRows, false);
+                        drawRhombus(rowNum, $scope.blanketParams.neutralColor, i, extraRows, false, opts);
                     }
                     return true;
                 }
             } else {
-                drawRhombus(rowNum, $scope.blanketParams.neutralColor, i, extraRows, false);
+                drawRhombus(rowNum, $scope.blanketParams.neutralColor, i, extraRows, false, opts);
                 return true;
             }
             return false;
         }
         
-        function createRow(i, extraRows, options, shape) {
+        function createRow(i, extraRows, shape, opts) {
             const row1Temp = shape === "decrease" ? "Max TemperatureF" : "Min TemperatureF";
             const row2Temp = shape === "decrease" ? "Min TemperatureF" : "Max TemperatureF";
             let increase = shape === "decrease" ? false : true ;
             
             const color1 = getColor(parseInt(days[i][row1Temp]));
-            colorStats[color1]++;
-            drawRhombus(1, color1, i, extraRows, increase);
+            drawRhombus(1, color1, i, extraRows, increase, opts);
             
             const color2 = getColor(parseInt(days[i][row2Temp]));
-            colorStats[color2]++;
             
             if (shape === "increase" || shape === "decrease") {
-                drawRhombus(2, color2, i, extraRows, increase);
+                drawRhombus(2, color2, i, extraRows, increase, opts);
             } else if (shape === "middle" && $scope.blanketParams.options.dayRow) {
-                drawMiddle(2, color2, i, extraRows);
+                drawMiddle(2, color2, i, extraRows, opts);
                 increase = false;
             } else if (shape === "middle" && !$scope.blanketParams.options.dayRow) {
-                drawRhombus(2, color2, i, extraRows);
+                increase = false;
+                drawRhombus(2, color2, i, extraRows, increase, opts);
             }
             
             if ($scope.blanketParams.options.dayRow) {
-                colorStats[neutralColor]++;
-                drawRhombus(3, $scope.blanketParams.neutralColor, i, extraRows, increase);
+                drawRhombus(3, $scope.blanketParams.neutralColor, i, extraRows, increase, opts);
             }
             
             if ($scope.blanketParams.options.monthRow) {
-                extraRows += checkMonthEnd(i, extraRows, options, increase) ? 1 : 0;
+                extraRows += checkMonthEnd(i, extraRows, $scope.blanketParams.options, increase, opts) ? 1 : 0;
             }
             
             return extraRows;
         }
        
-        function drawMiddle(rowNum, color, i, extraRows) {
-            const dayOffset = i * $scope.blanketParams.daySize;
+        function drawMiddle(rowNum, color, i, extraRows, {triStepSize, daySize}) {
+            const dayOffset = i * daySize;
             const extraLines = 2 * extraRows;
-            const topX = $scope.blanketParams.triStepSize + dayOffset + extraLines + 2 * (rowNum - 1);
-            const topY = $scope.blanketParams.triStepSize + dayOffset + extraLines + 2 * (rowNum - 1);
+            const topX = triStepSize + dayOffset + extraLines + 2 * (rowNum - 1);
+            const topY = triStepSize + dayOffset + extraLines + 2 * (rowNum - 1);
             const midX = topX + 1;
             const midY = topY + 1;
             const bottomX = topX;
@@ -200,33 +170,26 @@ angular.module("temperature-blanket", [])
             canvas.lineTo(topX, topY);
             canvas.fillStyle = color;
             canvas.fill();
-            
-            calculateArea(topX, color);    
         }
         
-        function drawRhombus(rowNum, color, i, extraRows, increase) {
-            const dayOffsetY = i * $scope.blanketParams.daySize;
+        function drawRhombus(rowNum, color, i, extraRows, increase, {triStepSize, daySize}) {
+            const dayOffsetY = i * daySize;
             const extraLines = 2 * extraRows;
-            let dayOffsetX = i * $scope.blanketParams.daySize;
-            let topX = $scope.blanketParams.triStepSize + dayOffsetX + extraLines + 2 * (rowNum - 1);
-            const topY = $scope.blanketParams.triStepSize + dayOffsetY + extraLines + 2 * (rowNum - 1);
-            let bottomX = $scope.blanketParams.triStepSize + dayOffsetX + extraLines + 2 * rowNum;
-            const bottomY = $scope.blanketParams.triStepSize + dayOffsetY + extraLines + 2 * rowNum;
+            let dayOffsetX = i * daySize;
+            let topX = triStepSize + dayOffsetX + extraLines + 2 * (rowNum - 1);
+            const topY = triStepSize + dayOffsetY + extraLines + 2 * (rowNum - 1);
+            let bottomX = triStepSize + dayOffsetX + extraLines + 2 * rowNum;
+            const bottomY = triStepSize + dayOffsetY + extraLines + 2 * rowNum;
                     
-            if (increase) {
-                calculateArea(topX, color);
-            } else {
-                dayOffsetX = (days.length - i) * $scope.blanketParams.daySize;
+            if (!increase) {
+                dayOffsetX = (days.length - i) * daySize;
                 if (extraRows < 7) {
-                    topX = $scope.blanketParams.triStepSize + dayOffsetX + extraLines - 2 * (rowNum - 1);
-                    bottomX = $scope.blanketParams.triStepSize + dayOffsetX + extraLines - 2 * rowNum;
+                    topX = triStepSize + dayOffsetX + extraLines - 2 * (rowNum - 1);
+                    bottomX = triStepSize + dayOffsetX + extraLines - 2 * rowNum;
                 } else {
-                    topX = $scope.blanketParams.triStepSize + dayOffsetX + 2 *
-                        (2 * $scope.blanketParams.daySize - extraRows) - 2 * (rowNum - 1);
-                    bottomX = $scope.blanketParams.triStepSize + dayOffsetX + 2 *
-                        (2 * $scope.blanketParams.daySize - extraRows) - 2 * rowNum;
+                    topX = triStepSize + dayOffsetX + 2 * (2 * daySize - extraRows) - 2 * (rowNum - 1);
+                    bottomX = triStepSize + dayOffsetX + 2 * (2 * daySize - extraRows) - 2 * rowNum;
                 }
-                calculateArea(bottomX, color);
             }
             
             canvas.beginPath();
@@ -238,40 +201,38 @@ angular.module("temperature-blanket", [])
             canvas.fill();
          }
         
-        function drawBottomTri(extraRows) {
-            const topY = $scope.blanketParams.triStepSize +
-                (days.length * $scope.blanketParams.daySize) + 2 * extraRows;
+        function drawBottomTri(extraRows, {triStepSize, daySize}) {
+            const topY = triStepSize + (days.length * daySize) + 2 * extraRows;
             canvas.beginPath();
-            canvas.moveTo(-$scope.blanketParams.triStepSize, topY);
+            canvas.moveTo(-triStepSize, topY);
             canvas.lineTo(0, topY + 5);
-            canvas.lineTo($scope.blanketParams.triStepSize, topY);
+            canvas.lineTo(triStepSize, topY);
             canvas.fillStyle = $scope.blanketParams.neutralColor;
             canvas.fill();
         }
         
-        function drawBlanket() {
+        function drawBlanket(opts) {
             // this is to draw a bias blanket 
             canvas.clearRect(-2400, 0, 4800, 4800);
             let extraRows = 0;
             if ($scope.blanketParams.options.triangleCaps) {
-                drawTopTri();
+                drawTopTri(opts.triStepSize);
             }
             
             for (let i = 0; i < days.length; i++) {
                 if (i < (days.length - 1) / 2) {
-                    extraRows = createRow(i, extraRows, $scope.blanketParams.options, "increase");
+                    extraRows = createRow(i, extraRows, "increase", opts);
                 } else if (i === (days.length - 1) / 2) {
-                    extraRows = createRow(i, extraRows, $scope.blanketParams.options, "middle");
+                    extraRows = createRow(i, extraRows, "middle", opts);
                 } else {
-                    extraRows = createRow(i, extraRows, $scope.blanketParams.options, "decrease");
+                    extraRows = createRow(i, extraRows, "decrease", opts);
                 }
             }
             if ($scope.blanketParams.options.triangleCaps) {
-                drawBottomTri(extraRows);
+                drawBottomTri(extraRows, opts);
             }
         }
-        addColorStats();
-        drawBlanket();        
+        drawBlanket(getDrawBlanketOpts());        
     });
 });
 
