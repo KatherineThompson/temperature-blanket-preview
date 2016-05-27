@@ -21,9 +21,8 @@ angular.module("temperature-blanket", [])
         
         $scope.weatherParams = {
             tempMin: 5,
-            tempMax: 104,
-        }
-        
+            tempMax: 104
+        };
         
         $scope.blanketParams = {
             numColors: 10,
@@ -92,16 +91,16 @@ angular.module("temperature-blanket", [])
             colorArea[color] += smallerX * 4;
         }
         
-        function calculatePercent() {
-            let total = 0;
-            for (const property in colorArea) {
-                total += colorArea[property];
-            }
+        // function calculatePercent() {
+        //     let total = 0;
+        //     for (const property in colorArea) {
+        //         total += colorArea[property];
+        //     }
             
-            for (const property in colorPercents) {
-                colorPercents[property] = Math.round((colorArea[property] / total) * 10000) / 100;
-            }
-        }
+        //     for (const property in colorPercents) {
+        //         colorPercents[property] = Math.round((colorArea[property] / total) * 10000) / 100;
+        //     }
+        // }
        
         function getColor(temp) {
             if (_.inRange(temp, $scope.weatherParams.tempMin, $scope.weatherParams.tempMax + 1)){
@@ -220,8 +219,10 @@ angular.module("temperature-blanket", [])
                     topX = $scope.blanketParams.triStepSize + dayOffsetX + extraLines - 2 * (rowNum - 1);
                     bottomX = $scope.blanketParams.triStepSize + dayOffsetX + extraLines - 2 * rowNum;
                 } else {
-                    topX = $scope.blanketParams.triStepSize + dayOffsetX + 2 * (2 * $scope.blanketParams.daySize - extraRows) - 2 * (rowNum - 1);
-                    bottomX = $scope.blanketParams.triStepSize + dayOffsetX + 2 * (2 * $scope.blanketParams.daySize - extraRows) - 2 * rowNum;
+                    topX = $scope.blanketParams.triStepSize + dayOffsetX + 2 *
+                        (2 * $scope.blanketParams.daySize - extraRows) - 2 * (rowNum - 1);
+                    bottomX = $scope.blanketParams.triStepSize + dayOffsetX + 2 *
+                        (2 * $scope.blanketParams.daySize - extraRows) - 2 * rowNum;
                 }
                 calculateArea(bottomX, color);
             }
@@ -236,7 +237,8 @@ angular.module("temperature-blanket", [])
          }
         
         function drawBottomTri(extraRows) {
-            const topY = $scope.blanketParams.triStepSize + (days.length * $scope.blanketParams.daySize) + 2 * extraRows;
+            const topY = $scope.blanketParams.triStepSize +
+                (days.length * $scope.blanketParams.daySize) + 2 * extraRows;
             canvas.beginPath();
             canvas.moveTo(-$scope.blanketParams.triStepSize, topY);
             canvas.lineTo(0, topY + 5);
