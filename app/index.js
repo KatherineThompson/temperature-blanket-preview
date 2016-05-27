@@ -13,11 +13,7 @@ angular.module("temperature-blanket", [])
         const colorArea = {};    
         const colorPercents = {};  
         
-        $scope.canvasDimensions = {
-            height: window.innerHeight,
-            width: (window.innerWidth / 12) * 9,
-            scaleFactor: .5
-        };
+        $scope.canvasDimensions = _.merge(getCanvasDimensions(), {scaleFactor: .5});
         
         $scope.weatherParams = {
             tempMin: 5,
@@ -55,12 +51,18 @@ angular.module("temperature-blanket", [])
         
         const canvas = document.getElementById("canvas").getContext("2d");
         
-        window.addEventListener("resize", function() {
-            $scope.$apply(() => {
-                $scope.canvasDimensions.height = $window.innerHeight;
-                $scope.canvasDimensions.width = ($window.innerWidth/ 12) * 9;
-            });
-        }, true);
+        function getCanvasDimensions() {
+            return {
+                height: $window.innerHeight,
+                width: ($window.innerWidth / 12) * 9
+            };
+        }
+        
+        $window.addEventListener(
+            "resize",
+            () => $scope.$apply(() => $scope.canvasDimensions = getCanvasDimensions()),
+            true
+        );
         
         $scope.$watch("[canvasDimensions.width, canvasDimensions.height]", () => {
             canvas.translate($scope.canvasDimensions.width / 2, 0);
@@ -250,7 +252,6 @@ angular.module("temperature-blanket", [])
         function drawBlanket() {
             // this is to draw a bias blanket 
             canvas.clearRect(-2400, 0, 4800, 4800);
-            const options = $scope.blanketParams.options;
             let extraRows = 0;
             if ($scope.blanketParams.options.triangleCaps) {
                 drawTopTri();
@@ -258,11 +259,11 @@ angular.module("temperature-blanket", [])
             
             for (let i = 0; i < days.length; i++) {
                 if (i < (days.length - 1) / 2) {
-                    extraRows = createRow(i, extraRows, options, "increase");
+                    extraRows = createRow(i, extraRows, $scope.blanketParams.options, "increase");
                 } else if (i === (days.length - 1) / 2) {
-                    extraRows = createRow(i, extraRows, options, "middle");
+                    extraRows = createRow(i, extraRows, $scope.blanketParams.options, "middle");
                 } else {
-                    extraRows = createRow(i, extraRows, options, "decrease");
+                    extraRows = createRow(i, extraRows, $scope.blanketParams.options, "decrease");
                 }
             }
             if ($scope.blanketParams.options.triangleCaps) {
