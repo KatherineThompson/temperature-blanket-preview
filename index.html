@@ -40,28 +40,26 @@
                         </form>
                     </div>
                         
-                        <div class="vertical grid-block" id="neutral-menu">
-                            <form id="neutralForm">
-                                <label for="neutralColor">Add an additional color...</label>
-                                <input type="color" value="#6C7073" id="neutralColor">
-                                
-                                <div>
-                                
-                                    <input type="checkbox" name="neutralOptions" value="dayRow" checked>
-                                    <label for="dayRow">...as an extra row between each day</label>
-                                </div>
-                                
-                                <div>
-                                    <input type="checkbox" name="neutralOptions" value="monthRow" checked>
-                                    <label for="monthRow">...as an extra row between each month</label>
-                                </div>
-                                <div>    
-                                    <input type="checkbox" name="neutralOptions" value="triangleCaps" checked>
-                                    <label for="triangleCaps">...as the first and last rows</label>
-                                </div>
-                            </form>
+                    <div class="vertical grid-block" id="neutral-menu">
+                        <form id="neutralForm">
+                            <label for="neutralColor">Add an additional color...</label>
+                            <input type="color" ng-model="blanketParams.neutralColor" id="neutralColor">
                             
-                            <button id="submit-button" class="expand button" ng-click="updateOptions()">Submit</button>
+                            <div>
+                                <input type="checkbox" name="neutralOptions" ng-model="blanketParams.options.dayRow">
+                                <label for="dayRow">...as an extra row between each day</label>
+                            </div>
+                            
+                            <div>
+                                <input type="checkbox" name="neutralOptions" ng-model="blanketParams.options.monthRow" checked>
+                                <label for="monthRow">...as an extra row between each month</label>
+                            </div>
+                            
+                            <div>    
+                                <input type="checkbox" name="neutralOptions" ng-model="blanketParams.options.triangleCaps" checked>
+                                <label for="triangleCaps">...as the first and last rows</label>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 <div id="canvas-div" class="grid-block small-9">        

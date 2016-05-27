@@ -1,22 +1,21 @@
 "use strict";
 
 const angular = require("angular");
-// const _ = require("lodash");
+const _ = require("lodash");
 
 angular.module("temperature-blanket", [])
     .controller("TemperatureBlanketCtrl", function($scope, getWeatherData, $window) {
     
     getWeatherData().then(function(days) {
-        // Eventually, these will be gathered from the data or user
         const tempMin = 5;
         const tempMax = 104;
         const numColors = 10;
-        const degreeDiff = (tempMax - tempMin)/numColors;
+        // const degreeDiff = (tempMax - tempMin)/numColors;
         const yarnColors = [];
-        let neutralColor = $("#neutralColor").val();
+        const neutralColor = $("#neutralColor").val();
         let triStepSize = 0;
         let daySize = 4;
-        const scaleFactor = 1;
+        const scaleFactor = .5;
         const colorStats = {};
         const colorArea = {};    
         const colorPercents = {};  
@@ -24,7 +23,13 @@ angular.module("temperature-blanket", [])
         $scope.canvasDimensions = {
             height: window.innerHeight,
             width: (window.innerWidth / 12) * 9
+        };
+        
+        $scope.weatherParams = {
+            tempMin: 5,
+            tempMax: 104,
         }
+        
         
         $scope.blanketParams = {
             numColors: 10,
@@ -44,11 +49,17 @@ angular.module("temperature-blanket", [])
                 "#aaaaaa",
                 "#dddddd",
                 "#ffffff"
-            ]
+            ],
+            options: {
+                dayRow: true,
+                monthRow: true,
+                triangleCaps: true
+            },
+            neutralColor: "#6C7073",
+            triStepSize: 5
         };
         
         const canvas = document.getElementById("canvas").getContext("2d");
-        // canvas.scale(scaleFactor, scaleFactor);
         
         window.addEventListener("resize", function() {
             $scope.$apply(() => {
@@ -58,36 +69,15 @@ angular.module("temperature-blanket", [])
         }, true);
         
         $scope.$watch("[canvasDimensions.width, canvasDimensions.height]", () => {
-            console.log("cats");
             canvas.translate($scope.canvasDimensions.width / 2, 0);
-            drawBlanket(checkNeutralOptions());
+            canvas.scale(scaleFactor, scaleFactor);
+            drawBlanket();
         }, true);
         
-        $scope.updateOptions = function() {
-            getColorInput();
-            neutralColor = $("#neutralColor").val();
-            drawBlanket(checkNeutralOptions());
-            calculatePercent();
-        }; 
-        
-        function checkNeutralOptions() {
-            const isChecked = {};
-            $("input[type='checkbox']").each(function(index, color) {
-                if($(color).prop("checked")) {
-                    isChecked[$(color).val()] = true;
-                } else {
-                    isChecked[$(color).val()] = false;
-                }
-            });
-            console.log(isChecked);
-            return isChecked;
-        }
-        
-        function getColorInput() {
-            $("#colors input").each(function(index, color) {
-                yarnColors[index] = $(color).val();
-            });
-        }
+        $scope.$watch("blanketParams", () => {
+            $scope.blanketParams.triStepSize = $scope.blanketParams.options.triangleCaps ? 5 : 0;
+            drawBlanket();
+        }, true);
         
         function addColorStats () {
             for (let i = 0; i < yarnColors.length; i++) {
@@ -118,23 +108,25 @@ angular.module("temperature-blanket", [])
         }
        
         function getColor(temp) {
-            if (temp >= tempMin && temp <= tempMax){
-                const index = Math.floor((temp - tempMin)/degreeDiff);
-                return yarnColors[index];
+            if (_.inRange(temp, $scope.weatherParams.tempMin, $scope.weatherParams.tempMax + 1)){
+                const degreeDiff = ($scope.weatherParams.tempMax - $scope.weatherParams.tempMin) /
+                    $scope.blanketParams.numColors;
+                const index = Math.floor((temp - $scope.weatherParams.tempMin) / degreeDiff);
+                return $scope.blanketParams.colors[index];
             }
             const err = new Error("Temperature is out of bounds");
             err.temp = temp;
-            err.tempMin = tempMin;
-            err.tempMax = tempMax;
+            err.tempMin = $scope.weatherParams.tempMin;
+            err.tempMax = $scope.weatherParams.tempMax;
             throw err;
         }
         
         function drawTopTri() {
             canvas.beginPath();
             canvas.moveTo(0, 0);
-            canvas.lineTo(0 + triStepSize, triStepSize);
-            canvas.lineTo(0 - triStepSize, triStepSize);
-            canvas.fillStyle = neutralColor;
+            canvas.lineTo(0 + $scope.blanketParams.triStepSize, $scope.blanketParams.triStepSize);
+            canvas.lineTo(0 - $scope.blanketParams.triStepSize, $scope.blanketParams.triStepSize);
+            canvas.fillStyle = $scope.blanketParams.neutralColor;
             canvas.fill();
         }
         
@@ -269,8 +261,9 @@ angular.module("temperature-blanket", [])
             canvas.fill();
         }
         
-        function drawBlanket(options) {
+        function drawBlanket() {
             // this is to draw a bias blanket 
+            const options = $scope.blanketParams.options;
             let extraRows = 0;
             if (options.triangleCaps) {
                 triStepSize = 5;
@@ -295,11 +288,7 @@ angular.module("temperature-blanket", [])
             }
         }
         addColorStats();
-        getColorInput();
-        drawBlanket(checkNeutralOptions());        
-        console.log(colorStats);
-        console.log(colorArea);
-        console.log(colorPercents);
+        drawBlanket();        
     });
 });
 
