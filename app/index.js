@@ -4,7 +4,7 @@ const angular = require("angular");
 // const _ = require("lodash");
 
 angular.module("temperature-blanket", [])
-    .controller("TemperatureBlanketCtrl", function($scope, getWeatherData) {
+    .controller("TemperatureBlanketCtrl", function($scope, getWeatherData, $window) {
     
     getWeatherData().then(function(days) {
         // Eventually, these will be gathered from the data or user
@@ -20,7 +20,12 @@ angular.module("temperature-blanket", [])
         const colorStats = {};
         const colorArea = {};    
         const colorPercents = {};  
-
+        
+        $scope.canvasDimensions = {
+            height: window.innerHeight,
+            width: (window.innerWidth / 12) * 9
+        }
+        
         $scope.blanketParams = {
             numColors: 10,
             colors: [
@@ -43,8 +48,20 @@ angular.module("temperature-blanket", [])
         };
         
         const canvas = document.getElementById("canvas").getContext("2d");
-        canvas.scale(scaleFactor, scaleFactor);
-        canvas.translate(1200, 0);
+        // canvas.scale(scaleFactor, scaleFactor);
+        
+        window.addEventListener("resize", function() {
+            $scope.$apply(() => {
+                $scope.canvasDimensions.height = $window.innerHeight;
+                $scope.canvasDimensions.width = ($window.innerWidth/ 12) * 9;
+            });
+        }, true);
+        
+        $scope.$watch("[canvasDimensions.width, canvasDimensions.height]", () => {
+            console.log("cats");
+            canvas.translate($scope.canvasDimensions.width / 2, 0);
+            drawBlanket(checkNeutralOptions());
+        }, true);
         
         $scope.updateOptions = function() {
             getColorInput();
