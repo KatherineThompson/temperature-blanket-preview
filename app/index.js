@@ -1,26 +1,19 @@
 "use strict";
 
 const angular = require("angular");
-// const _ = require("lodash");
+const _ = require("lodash");
 
 angular.module("temperature-blanket", [])
-    .controller("TemperatureBlanketCtrl", function($scope, getWeatherData) {
+    .controller("TemperatureBlanketCtrl", function($scope, getWeatherData, $window, $document) {
     
     getWeatherData().then(function(days) {
-        // Eventually, these will be gathered from the data or user
-        const tempMin = 5;
-        const tempMax = 104;
-        const numColors = 10;
-        const degreeDiff = (tempMax - tempMin)/numColors;
-        const yarnColors = [];
-        let neutralColor = $("#neutralColor").val();
-        let triStepSize = 0;
-        let daySize = 4;
-        const scaleFactor = 1;
-        const colorStats = {};
-        const colorArea = {};    
-        const colorPercents = {};  
-
+        $scope.canvasDimensions = _.merge(getCanvasDimensions(), {scaleFactor: .5});
+        
+        $scope.weatherParams = {
+            tempMin: 5,
+            tempMax: 104
+        };
+        
         $scope.blanketParams = {
             numColors: 10,
             colors: [
@@ -39,155 +32,126 @@ angular.module("temperature-blanket", [])
                 "#aaaaaa",
                 "#dddddd",
                 "#ffffff"
-            ]
+            ],
+            options: {
+                dayRow: true,
+                monthRow: true,
+                triangleCaps: true
+            },
+            neutralColor: "#6C7073",
+            triStepSize: 5,
+            daySize: 6
         };
         
-        const canvas = document.getElementById("canvas").getContext("2d");
-        canvas.scale(scaleFactor, scaleFactor);
-        canvas.translate(1200, 0);
+        const canvas = $document[0].getElementById("canvas").getContext("2d");
         
-        $scope.updateOptions = function() {
-            getColorInput();
-            neutralColor = $("#neutralColor").val();
-            drawBlanket(checkNeutralOptions());
-            calculatePercent();
-        }; 
-        
-        function checkNeutralOptions() {
-            const isChecked = {};
-            $("input[type='checkbox']").each(function(index, color) {
-                if($(color).prop("checked")) {
-                    isChecked[$(color).val()] = true;
-                } else {
-                    isChecked[$(color).val()] = false;
-                }
-            });
-            console.log(isChecked);
-            return isChecked;
+        function getCanvasDimensions() {
+            const canvasDiv = $document[0].getElementById("canvas-div");
+            return {
+                height: canvasDiv.clientHeight,
+                width: canvasDiv.clientWidth
+            };
         }
         
-        function getColorInput() {
-            $("#colors input").each(function(index, color) {
-                yarnColors[index] = $(color).val();
-            });
+        $window.addEventListener(
+            "resize",
+            () => $scope.$apply(() => $scope.canvasDimensions = getCanvasDimensions()),
+            true
+        );
+        
+        $scope.$watch("[canvasDimensions.width, canvasDimensions.height]", () => {
+            canvas.translate($scope.canvasDimensions.width / 2, 0);
+            canvas.scale($scope.canvasDimensions.scaleFactor, $scope.canvasDimensions.scaleFactor);
+            drawBlanket(getDrawBlanketOpts());
+        }, true);
+        
+        $scope.$watch("blanketParams", () => {
+            drawBlanket(getDrawBlanketOpts());
+        }, true);
+        
+        function getDrawBlanketOpts() {
+            return {
+                triStepSize: $scope.blanketParams.options.triangleCaps ? 5 : 0,
+                daySize: $scope.blanketParams.options.dayRow ? 6 : 4
+            };
         }
         
-        function addColorStats () {
-            for (let i = 0; i < yarnColors.length; i++) {
-                colorStats[yarnColors[i]] = 0;
-                colorArea[yarnColors[i]] = 0;
-                colorPercents[yarnColors[i]] = 0;
-            }
-            colorStats[neutralColor] = 0;
-            colorArea[neutralColor] = triStepSize * triStepSize * 2;
-            //provides the area of the top and bottom triangles
-            // a = h(b/2); h = triStepSize; b = 2 * triStepSize
-            colorPercents[neutralColor] = 0;
-        }
-        
-        function calculateArea(smallerX, color) {
-            colorArea[color] += smallerX * 4;
-        }
-        
-        function calculatePercent() {
-            let total = 0;
-            for (const property in colorArea) {
-                total += colorArea[property];
-            }
-            
-            for (const property in colorPercents) {
-                colorPercents[property] = Math.round((colorArea[property] / total) * 10000) / 100;
-            }
-        }
-       
         function getColor(temp) {
-            if (temp >= tempMin && temp <= tempMax){
-                const index = Math.floor((temp - tempMin)/degreeDiff);
-                return yarnColors[index];
+            if (_.inRange(temp, $scope.weatherParams.tempMin, $scope.weatherParams.tempMax + 1)){
+                const degreeDiff = ($scope.weatherParams.tempMax - $scope.weatherParams.tempMin) /
+                    $scope.blanketParams.numColors;
+                const index = Math.floor((temp - $scope.weatherParams.tempMin) / degreeDiff);
+                return $scope.blanketParams.colors[index];
             }
             const err = new Error("Temperature is out of bounds");
             err.temp = temp;
-            err.tempMin = tempMin;
-            err.tempMax = tempMax;
+            err.tempMin = $scope.weatherParams.tempMin;
+            err.tempMax = $scope.weatherParams.tempMax;
             throw err;
         }
         
-        function drawTopTri() {
+        function drawTopTri(triStepSize) {
             canvas.beginPath();
             canvas.moveTo(0, 0);
             canvas.lineTo(0 + triStepSize, triStepSize);
             canvas.lineTo(0 - triStepSize, triStepSize);
-            canvas.fillStyle = neutralColor;
+            canvas.fillStyle = $scope.blanketParams.neutralColor;
             canvas.fill();
         }
         
-        function checkMonthEnd(i, extraRows, options, increase) {
+        function checkMonthEnd(i, extraRows, options, increase, opts) {
             const today = days[i].CST.split("-");
-            let rowNum;
-            
-            if (options.dayRow) {
-                rowNum = 4;
-            } else {
-                rowNum = 3;
-            }
+            const rowNum = $scope.blanketParams.options.dayRow ? 4 : 3;
             
             if (days[i + 1]) {
                 const tomorrow = days[i + 1].CST.split("-");
                 if (parseInt(today[1]) < parseInt(tomorrow[1])) {
                     if (increase) {
-                    drawRhombus(rowNum, neutralColor, i, extraRows, true); 
+                    drawRhombus(rowNum, $scope.blanketParams.neutralColor, i, extraRows, true, opts); 
                     } else {
-                        drawRhombus(rowNum, neutralColor, i, extraRows, false);
+                        drawRhombus(rowNum, $scope.blanketParams.neutralColor, i, extraRows, false, opts);
                     }
-                    return 1;
+                    return true;
                 }
             } else {
-                drawRhombus(rowNum, neutralColor, i, extraRows, false);
-                return 1;
+                drawRhombus(rowNum, $scope.blanketParams.neutralColor, i, extraRows, false, opts);
+                return true;
             }
-            return 0;
+            return false;
         }
         
-        function createRow(i, extraRows, options, shape) {
-            let row1Temp = "Min TemperatureF";
-            let row2Temp = "Max TemperatureF";
-            let increase = true;
-            
-            if (shape === "decrease") {
-                row1Temp = "Max TemperatureF";
-                row2Temp = "Min TemperatureF";
-                increase = false;
-            } 
+        function createRow(i, extraRows, shape, opts) {
+            const row1Temp = shape === "decrease" ? "Max TemperatureF" : "Min TemperatureF";
+            const row2Temp = shape === "decrease" ? "Min TemperatureF" : "Max TemperatureF";
+            let increase = shape === "decrease" ? false : true ;
             
             const color1 = getColor(parseInt(days[i][row1Temp]));
-            colorStats[color1]++;
-            drawRhombus(1, color1, i, extraRows, increase);
+            drawRhombus(1, color1, i, extraRows, increase, opts);
             
             const color2 = getColor(parseInt(days[i][row2Temp]));
-            colorStats[color2]++;
             
             if (shape === "increase" || shape === "decrease") {
-                drawRhombus(2, color2, i, extraRows, increase);
-            } else if (shape === "middle" && options.dayRow) {
-                drawMiddle(2, color2, i, extraRows);
+                drawRhombus(2, color2, i, extraRows, increase, opts);
+            } else if (shape === "middle" && $scope.blanketParams.options.dayRow) {
+                drawMiddle(2, color2, i, extraRows, opts);
                 increase = false;
-            } else if (shape === "middle" && !options.dayRow) {
-                drawRhombus(2, color2, i, extraRows);
+            } else if (shape === "middle" && !$scope.blanketParams.options.dayRow) {
+                increase = false;
+                drawRhombus(2, color2, i, extraRows, increase, opts);
             }
             
-            if (options.dayRow) {
-                colorStats[neutralColor]++;
-                drawRhombus(3, neutralColor, i, extraRows, increase);
+            if ($scope.blanketParams.options.dayRow) {
+                drawRhombus(3, $scope.blanketParams.neutralColor, i, extraRows, increase, opts);
             }
             
-            if (options.monthRow) {
-                extraRows += checkMonthEnd(i, extraRows, options, increase);
+            if ($scope.blanketParams.options.monthRow) {
+                extraRows += checkMonthEnd(i, extraRows, $scope.blanketParams.options, increase, opts) ? 1 : 0;
             }
             
             return extraRows;
         }
        
-        function drawMiddle(rowNum, color, i, extraRows) {
+        function drawMiddle(rowNum, color, i, extraRows, {triStepSize, daySize}) {
             const dayOffset = i * daySize;
             const extraLines = 2 * extraRows;
             const topX = triStepSize + dayOffset + extraLines + 2 * (rowNum - 1);
@@ -206,11 +170,9 @@ angular.module("temperature-blanket", [])
             canvas.lineTo(topX, topY);
             canvas.fillStyle = color;
             canvas.fill();
-            
-            calculateArea(topX, color);    
         }
         
-        function drawRhombus(rowNum, color, i, extraRows, increase) {
+        function drawRhombus(rowNum, color, i, extraRows, increase, {triStepSize, daySize}) {
             const dayOffsetY = i * daySize;
             const extraLines = 2 * extraRows;
             let dayOffsetX = i * daySize;
@@ -219,9 +181,7 @@ angular.module("temperature-blanket", [])
             let bottomX = triStepSize + dayOffsetX + extraLines + 2 * rowNum;
             const bottomY = triStepSize + dayOffsetY + extraLines + 2 * rowNum;
                     
-            if (increase) {
-                calculateArea(topX, color);
-            } else {
+            if (!increase) {
                 dayOffsetX = (days.length - i) * daySize;
                 if (extraRows < 7) {
                     topX = triStepSize + dayOffsetX + extraLines - 2 * (rowNum - 1);
@@ -230,7 +190,6 @@ angular.module("temperature-blanket", [])
                     topX = triStepSize + dayOffsetX + 2 * (2 * daySize - extraRows) - 2 * (rowNum - 1);
                     bottomX = triStepSize + dayOffsetX + 2 * (2 * daySize - extraRows) - 2 * rowNum;
                 }
-                calculateArea(bottomX, color);
             }
             
             canvas.beginPath();
@@ -242,47 +201,38 @@ angular.module("temperature-blanket", [])
             canvas.fill();
          }
         
-        function drawBottomTri(extraRows) {
+        function drawBottomTri(extraRows, {triStepSize, daySize}) {
             const topY = triStepSize + (days.length * daySize) + 2 * extraRows;
             canvas.beginPath();
             canvas.moveTo(-triStepSize, topY);
             canvas.lineTo(0, topY + 5);
             canvas.lineTo(triStepSize, topY);
-            canvas.fillStyle = neutralColor;
+            canvas.fillStyle = $scope.blanketParams.neutralColor;
             canvas.fill();
         }
         
-        function drawBlanket(options) {
+        function drawBlanket(opts) {
             // this is to draw a bias blanket 
+            canvas.clearRect(-2400, 0, 4800, 4800);
             let extraRows = 0;
-            if (options.triangleCaps) {
-                triStepSize = 5;
-                drawTopTri();
-            }
-            
-            if (options.dayRow) {
-                daySize = 6;
+            if ($scope.blanketParams.options.triangleCaps) {
+                drawTopTri(opts.triStepSize);
             }
             
             for (let i = 0; i < days.length; i++) {
                 if (i < (days.length - 1) / 2) {
-                    extraRows = createRow(i, extraRows, options, "increase");
+                    extraRows = createRow(i, extraRows, "increase", opts);
                 } else if (i === (days.length - 1) / 2) {
-                    extraRows = createRow(i, extraRows, options, "middle");
+                    extraRows = createRow(i, extraRows, "middle", opts);
                 } else {
-                    extraRows = createRow(i, extraRows, options, "decrease");
+                    extraRows = createRow(i, extraRows, "decrease", opts);
                 }
             }
-            if (options.triangleCaps) {
-                drawBottomTri(extraRows);
+            if ($scope.blanketParams.options.triangleCaps) {
+                drawBottomTri(extraRows, opts);
             }
         }
-        addColorStats();
-        getColorInput();
-        drawBlanket(checkNeutralOptions());        
-        console.log(colorStats);
-        console.log(colorArea);
-        console.log(colorPercents);
+        drawBlanket(getDrawBlanketOpts());        
     });
 });
 
