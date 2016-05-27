@@ -134,14 +134,14 @@ angular.module("temperature-blanket", [])
                 const tomorrow = days[i + 1].CST.split("-");
                 if (parseInt(today[1]) < parseInt(tomorrow[1])) {
                     if (increase) {
-                    drawRhombus(rowNum, neutralColor, i, extraRows, true); 
+                    drawRhombus(rowNum, $scope.blanketParams.neutralColor, i, extraRows, true); 
                     } else {
-                        drawRhombus(rowNum, neutralColor, i, extraRows, false);
+                        drawRhombus(rowNum, $scope.blanketParams.neutralColor, i, extraRows, false);
                     }
                     return true;
                 }
             } else {
-                drawRhombus(rowNum, neutralColor, i, extraRows, false);
+                drawRhombus(rowNum, $scope.blanketParams.neutralColor, i, extraRows, false);
                 return true;
             }
             return false;
@@ -170,7 +170,7 @@ angular.module("temperature-blanket", [])
             
             if ($scope.blanketParams.options.dayRow) {
                 colorStats[neutralColor]++;
-                drawRhombus(3, neutralColor, i, extraRows, increase);
+                drawRhombus(3, $scope.blanketParams.neutralColor, i, extraRows, increase);
             }
             
             if ($scope.blanketParams.options.monthRow) {
@@ -241,12 +241,13 @@ angular.module("temperature-blanket", [])
             canvas.moveTo(-$scope.blanketParams.triStepSize, topY);
             canvas.lineTo(0, topY + 5);
             canvas.lineTo($scope.blanketParams.triStepSize, topY);
-            canvas.fillStyle = neutralColor;
+            canvas.fillStyle = $scope.blanketParams.neutralColor;
             canvas.fill();
         }
         
         function drawBlanket() {
             // this is to draw a bias blanket 
+            canvas.clearRect(-2400, 0, 4800, 4800);
             const options = $scope.blanketParams.options;
             let extraRows = 0;
             if ($scope.blanketParams.options.triangleCaps) {
