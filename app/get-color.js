@@ -3,7 +3,7 @@
 const _ = require("lodash");
 
 function getColor(temp, weatherParams, blanketParams) {
-    if (_.inRange(temp, weatherParams.tempMin, weatherParams.tempMax + 1)){
+    if (_.inRange(temp, weatherParams.tempMin, weatherParams.tempMax + 1)) {
         const degreeDiff = (weatherParams.tempMax - weatherParams.tempMin + 1) / blanketParams.numColors;
         const index = Math.floor((temp - weatherParams.tempMin) / degreeDiff);
         return blanketParams.colors[index];

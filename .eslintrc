@@ -28,6 +28,7 @@
         "prefer-spread": "error",
         "no-multiple-empty-lines": "error",
         "key-spacing": "error",
-        "semi": "error"
+        "semi": "error",
+        "space-before-blocks": "error"
     }
 }
