@@ -215,10 +215,12 @@ angular.module("temperature-blanket", [])
                     extraRows = createRow(i, extraRows, "decrease", opts);
                 }
             }
+            
             if ($scope.blanketParams.options.triangleCaps) {
                 drawBottomTri(extraRows, opts);
             }
         }
+        
         drawBlanket(getDrawBlanketOpts());        
     });
 });
