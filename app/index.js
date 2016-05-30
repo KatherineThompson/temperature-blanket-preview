@@ -2,6 +2,7 @@
 
 const angular = require("angular");
 const _ = require("lodash");
+const getColor = require("./get-color");
 
 angular.module("temperature-blanket", [])
     .controller("TemperatureBlanketCtrl", function($scope, getWeatherData, $window, $document) {
@@ -76,20 +77,6 @@ angular.module("temperature-blanket", [])
             };
         }
         
-        function getColor(temp) {
-            if (_.inRange(temp, $scope.weatherParams.tempMin, $scope.weatherParams.tempMax + 1)){
-                const degreeDiff = ($scope.weatherParams.tempMax - $scope.weatherParams.tempMin) /
-                    $scope.blanketParams.numColors;
-                const index = Math.floor((temp - $scope.weatherParams.tempMin) / degreeDiff);
-                return $scope.blanketParams.colors[index];
-            }
-            const err = new Error("Temperature is out of bounds");
-            err.temp = temp;
-            err.tempMin = $scope.weatherParams.tempMin;
-            err.tempMax = $scope.weatherParams.tempMax;
-            throw err;
-        }
-        
         function drawTopTri(triStepSize) {
             canvas.beginPath();
             canvas.moveTo(0, 0);
@@ -125,10 +112,10 @@ angular.module("temperature-blanket", [])
             const row2Temp = shape === "decrease" ? "Min TemperatureF" : "Max TemperatureF";
             let increase = shape === "decrease" ? false : true ;
             
-            const color1 = getColor(parseInt(days[i][row1Temp]));
+            const color1 = getColor(parseInt(days[i][row1Temp]), $scope.weatherParams, $scope.blanketParams);
             drawRhombus(1, color1, i, extraRows, increase, opts);
             
-            const color2 = getColor(parseInt(days[i][row2Temp]));
+            const color2 = getColor(parseInt(days[i][row2Temp]), $scope.weatherParams, $scope.blanketParams);
             
             if (shape === "increase" || shape === "decrease") {
                 drawRhombus(2, color2, i, extraRows, increase, opts);
