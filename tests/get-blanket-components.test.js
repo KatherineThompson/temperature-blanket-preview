@@ -2,8 +2,8 @@
 
 const test = require("tape");
 const getBlanketComponents = require("../app/get-blanket-components");
-const weatherData = require("../data/wileyPost.json");
-const missingDayData = require("../data/edmond.json");
+const weatherData = require("../data/wileyPost");
+const missingDayData = require("../data/edmond");
 
 test("getBlanketComponents", t => {
     const weatherParams = {

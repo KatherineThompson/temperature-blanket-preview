@@ -1,10 +1,13 @@
 "use strict";
 
+const assert = require("assert");
+const _ = require("lodash");
+
 function getCoordinates(blanketComponents) {
     let xOffset = 0;
     let yOffset = 0;
     return blanketComponents.map((component, index) => {
-        const newComponent = {color: component.color};
+        const newComponent = _.pick(component, ["color"]);
         if (component.type === "triangle") {
             const triStepSize = 5;
             if (index === 0) {
@@ -25,6 +28,8 @@ function getCoordinates(blanketComponents) {
                 
                 xOffset -= triStepSize;
                 yOffset += triStepSize;
+                
+                assert(xOffset === 0, "xOffset should be 0");
             }
         } else if (component.type === "row") {
             const rowStepSize = 2;

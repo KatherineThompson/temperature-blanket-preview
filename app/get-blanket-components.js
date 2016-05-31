@@ -14,6 +14,10 @@ function getBlanketComponents(weatherParams, blanketParams, weatherData) {
         components.push({type: "row", color});
     }
     
+    function getMonth(day) {
+        return moment(day, "YYYY-M-D").month();
+    }
+    
     weatherData.forEach((day, index) => {
         const minTempColor = day["Min TemperatureF"] ?
             getColor(parseInt(day["Min TemperatureF"]), weatherParams, blanketParams) : blanketParams.neutralColor;
@@ -32,8 +36,8 @@ function getBlanketComponents(weatherParams, blanketParams, weatherData) {
             if (blanketParams.options.dayRow) {
                 pushRow(blanketParams.neutralColor);
             }
-            const todaysMonth = moment(day.CST, "YYYY-M-D").month();
-            const tomorrowsMonth = moment(weatherData[index + 1].CST, "YYYY-M-D").month();
+            const todaysMonth = getMonth(day.CST);
+            const tomorrowsMonth = getMonth(weatherData[index + 1].CST);
             if (blanketParams.options.monthRow && todaysMonth < tomorrowsMonth) {
                 pushRow(blanketParams.neutralColor);
             }

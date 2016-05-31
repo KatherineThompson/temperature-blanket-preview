@@ -3,7 +3,8 @@
 const test = require("tape");
 const getCoordinates = require("../app/get-coordinates");
 const getBlanketComponents = require("../app/get-blanket-components");
-const weatherData = require("../data/wileyPost.json");
+const weatherData = require("../data/wileyPost");
+const _ = require("lodash");
 
 test("getCoordinates", t => {
     const weatherParams = {
@@ -48,7 +49,7 @@ test("getCoordinates", t => {
         const coordinates = getCoordinates(blanketComponents);
         
         t.deepEqual(
-            [coordinates[0], coordinates[coordinates.length - 1]],
+            [coordinates[0], _.last(coordinates)],
             [topTri, bottomTri],
             "the top and bottom triangle have the correct coordinates"
         );
