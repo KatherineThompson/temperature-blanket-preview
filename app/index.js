@@ -8,7 +8,7 @@ angular.module("temperature-blanket", [])
     .controller("TemperatureBlanketCtrl", function($scope, getWeatherData, $window, $document) {
     
     getWeatherData().then(function(days) {
-        $scope.canvasDimensions = _.merge(getCanvasDimensions(), {scaleFactor: .5});
+        // $scope.canvasDimensions = _.merge(getCanvasDimensions(), {scaleFactor: .5});
         
         $scope.weatherParams = {
             tempMin: 5,
@@ -44,7 +44,7 @@ angular.module("temperature-blanket", [])
             daySize: 6
         };
         
-        const canvas = $document[0].getElementById("canvas").getContext("2d");
+        // const canvas = $document[0].getElementById("canvas").getContext("2d");
         
         function getCanvasDimensions() {
             const canvasDiv = $document[0].getElementById("canvas-div");
@@ -54,21 +54,21 @@ angular.module("temperature-blanket", [])
             };
         }
         
-        $window.addEventListener(
-            "resize",
-            () => $scope.$apply(() => $scope.canvasDimensions = getCanvasDimensions()),
-            true
-        );
+        // $window.addEventListener(
+        //     "resize",
+        //     () => $scope.$apply(() => $scope.canvasDimensions = getCanvasDimensions()),
+        //     true
+        // );
         
-        $scope.$watch("[canvasDimensions.width, canvasDimensions.height]", () => {
-            canvas.translate($scope.canvasDimensions.width / 2, 0);
-            canvas.scale($scope.canvasDimensions.scaleFactor, $scope.canvasDimensions.scaleFactor);
-            drawBlanket(getDrawBlanketOpts());
-        }, true);
+        // $scope.$watch("[canvasDimensions.width, canvasDimensions.height]", () => {
+        //     canvas.translate($scope.canvasDimensions.width / 2, 0);
+        //     canvas.scale($scope.canvasDimensions.scaleFactor, $scope.canvasDimensions.scaleFactor);
+        //     drawBlanket(getDrawBlanketOpts());
+        // }, true);
         
-        $scope.$watch("blanketParams", () => {
-            drawBlanket(getDrawBlanketOpts());
-        }, true);
+        // $scope.$watch("blanketParams", () => {
+        //     drawBlanket(getDrawBlanketOpts());
+        // }, true);
         
         function getDrawBlanketOpts() {
             return {
@@ -221,7 +221,7 @@ angular.module("temperature-blanket", [])
             }
         }
         
-        drawBlanket(getDrawBlanketOpts());        
+        // drawBlanket(getDrawBlanketOpts());        
     });
 });
 
