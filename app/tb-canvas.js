@@ -62,7 +62,8 @@ angular.module("temperature-blanket").directive("tbCanvas", function($window, $d
             
             function drawBlanket(coordinates)  {
                 clearCanvas();
-                canvas.translate(scope.canvasDimensions.width / 2, 0);
+                const lineOffset = scope.blanketParams.options.triangleCaps ? 0.5 : 0;
+                canvas.translate(scope.canvasDimensions.width / 2 + lineOffset, lineOffset);
                 canvas.scale(scope.canvasDimensions.scaleFactor, scope.canvasDimensions.scaleFactor);
                 coordinates.map(shape => {
                     canvas.beginPath();
