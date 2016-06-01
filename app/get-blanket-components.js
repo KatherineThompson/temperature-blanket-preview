@@ -17,7 +17,7 @@ function getBlanketComponents(weatherParams, blanketParams, weatherData) {
     function getMonth(day) {
         return moment(day, "YYYY-M-D").month();
     }
-    
+
     weatherData.forEach((day, index) => {
         const minTempColor = day["Min TemperatureF"] ?
             getColor(parseInt(day["Min TemperatureF"]), weatherParams, blanketParams) : blanketParams.neutralColor;

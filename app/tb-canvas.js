@@ -3,9 +3,9 @@
 const angular = require("angular");
 const getCoordinates = require("./get-coordinates");
 const getBlanketComponents = require("./get-blanket-components");
-const weatherData = require("../data/wileyPost");
+const _ = require("lodash");
 
-angular.module("temperature-blanket").directive("tb-canvas", function() {
+angular.module("temperature-blanket").directive("tbCanvas", function($window, $document) {
     return {
         template: `<canvas id="canvas"
                         height="{{canvasDimensions.height}}"
@@ -15,18 +15,10 @@ angular.module("temperature-blanket").directive("tb-canvas", function() {
                     
         link: function(scope, element) {
             element.addClass("grid-block small-9");
-            element.id("canvas-div");
             
             const canvas = $document[0].getElementById("canvas").getContext("2d");
             
-            scope.canvasDimensions = _.merge(getCanvasDimensions(), {scaleFactor: .5});    
-            canvas.translate($scope.canvasDimensions.width / 2, 0);
-            canvas.scale($scope.canvasDimensions.scaleFactor, $scope.canvasDimensions.scaleFactor);
-            
-            
-            const blanketComponents = getBlanketComponents(scope.weatherParams, scope.blanketParams, weatherData);
-            const coordinates = getCoordinates(blanketComponents);
-            drawBlanket(coordinates);
+            scope.canvasDimensions = getCanvasDimensions();
             
             $window.addEventListener(
                 "resize",
@@ -35,30 +27,43 @@ angular.module("temperature-blanket").directive("tb-canvas", function() {
             );
             
             scope.$watch("blanketParams", () => {
-                drawBlanket(coordinates);
+                if (scope.blanketParams && scope.weatherParams && scope.weatherData) {
+                    const blanketComponents = getBlanketComponents(
+                        scope.weatherParams,
+                        scope.blanketParams,
+                        scope.weatherData
+                    );
+                    const coordinates = getCoordinates(blanketComponents);
+                    drawBlanket(coordinates);
+                }
             }, true);
             
-            $cope.$watch("[canvasDimensions.width, canvasDimensions.height]", () => {
-                drawBlanket(coordinates);
+            scope.$watch("[canvasDimensions.width, canvasDimensions.height]", () => {
+                if (scope.blanketParams && scope.weatherParams && scope.weatherData) {
+                    const blanketComponents = getBlanketComponents(scope.weatherParams, scope.blanketParams, scope.weatherData);
+                    const coordinates = getCoordinates(blanketComponents);
+                    drawBlanket(coordinates);
+                }
             }, true);
             
             function getCanvasDimensions() {
+                debugger;
                 return {
-                    height: element.clientHeight,
-                    width: element.clientWidth
+                    height: element[0].clientHeight,
+                    width: element[0].clientWidth,
+                    scaleFactor: 0.5
                 };
             }
             
             function clearCanvas() {
-                canvas.save();
                 canvas.setTransform(1, 0, 0, 1, 0, 0);
-                canvas.clearRect(0, 0, element.width, element.height);
-                canvas.restore();
+                canvas.clearRect(0, 0, scope.canvasDimensions.width, scope.canvasDimensions.height);
             }
             
             function drawBlanket(coordinates)  {
-                debugger;
                 clearCanvas();
+                canvas.translate(scope.canvasDimensions.width / 2, 0);
+                canvas.scale(scope.canvasDimensions.scaleFactor, scope.canvasDimensions.scaleFactor);
                 coordinates.map(shape => {
                     canvas.beginPath();
                     shape.points.forEach((point, index) => {
@@ -76,16 +81,8 @@ angular.module("temperature-blanket").directive("tb-canvas", function() {
         
         scope: {
             blanketParams: "=",
-            weatherParams: "="
+            weatherParams: "=",
+            weatherData: "="
         }
     };
 });
-
-
-        
-        
-        
-        
-        
-        
-        
