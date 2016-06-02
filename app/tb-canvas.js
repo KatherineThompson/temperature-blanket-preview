@@ -40,14 +40,17 @@ angular.module("temperature-blanket").directive("tbCanvas", function($window, $d
             
             scope.$watch("[canvasDimensions.width, canvasDimensions.height]", () => {
                 if (scope.blanketParams && scope.weatherParams && scope.weatherData) {
-                    const blanketComponents = getBlanketComponents(scope.weatherParams, scope.blanketParams, scope.weatherData);
+                    const blanketComponents = getBlanketComponents(
+                        scope.weatherParams,
+                        scope.blanketParams,
+                        scope.weatherData
+                    );
                     const coordinates = getCoordinates(blanketComponents);
                     drawBlanket(coordinates);
                 }
             }, true);
             
             function getCanvasDimensions() {
-                debugger;
                 return {
                     height: element[0].clientHeight,
                     width: element[0].clientWidth,
