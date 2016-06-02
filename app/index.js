@@ -1,11 +1,9 @@
 "use strict";
 
 const angular = require("angular");
-const _ = require("lodash");
-const getColor = require("./get-color");
 
 angular.module("temperature-blanket", [])
-    .controller("TemperatureBlanketCtrl", function($scope, getWeatherData, $window, $document) {
+    .controller("TemperatureBlanketCtrl", function($scope, getWeatherData) {
     
     getWeatherData().then(function(days) {
         $scope.weatherData = days;

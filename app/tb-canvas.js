@@ -5,9 +5,9 @@ const getCoordinates = require("./get-coordinates");
 const getBlanketComponents = require("./get-blanket-components");
 const _ = require("lodash");
 
-angular.module("temperature-blanket").directive("tbCanvas", function($window, $document) {
+angular.module("temperature-blanket").directive("tbCanvas", function($window) {
     return {
-        template: `<canvas id="canvas"
+        template: `<canvas
                         height="{{canvasDimensions.height}}"
                         width="{{canvasDimensions.width}}">
                         Visualization of weather data as a knitted or crocheted blanket
@@ -16,7 +16,7 @@ angular.module("temperature-blanket").directive("tbCanvas", function($window, $d
         link: function(scope, element) {
             element.addClass("grid-block small-9");
             
-            const canvas = $document[0].getElementById("canvas").getContext("2d");
+            const canvas = element.find("canvas")[0].getContext("2d");
             
             scope.canvasDimensions = getCanvasDimensions();
             
@@ -26,7 +26,7 @@ angular.module("temperature-blanket").directive("tbCanvas", function($window, $d
                 true
             );
             
-            scope.$watch("blanketParams", () => {
+            function drawBlanket() {
                 if (scope.blanketParams && scope.weatherParams && scope.weatherData) {
                     const blanketComponents = getBlanketComponents(
                         scope.weatherParams,
@@ -34,27 +34,23 @@ angular.module("temperature-blanket").directive("tbCanvas", function($window, $d
                         scope.weatherData
                     );
                     const coordinates = getCoordinates(blanketComponents);
-                    drawBlanket(coordinates);
+                    const lastPoints = _.last(coordinates).points;
+                    const blanketDiagonalPoint = _.last(lastPoints).y;
+                    const smallestCanvasDimension = scope.canvasDimensions.height < scope.canvasDimensions.width ?
+                        scope.canvasDimensions.height : scope.canvasDimensions.width;
+                    
+                    const scaleFactor = smallestCanvasDimension / blanketDiagonalPoint;
+                    
+                    renderBlanket(coordinates, scaleFactor);
                 }
-            }, true);
+            }
             
-            scope.$watch("[canvasDimensions.width, canvasDimensions.height]", () => {
-                if (scope.blanketParams && scope.weatherParams && scope.weatherData) {
-                    const blanketComponents = getBlanketComponents(
-                        scope.weatherParams,
-                        scope.blanketParams,
-                        scope.weatherData
-                    );
-                    const coordinates = getCoordinates(blanketComponents);
-                    drawBlanket(coordinates);
-                }
-            }, true);
+            scope.$watch("[blanketParams, canvasDimensions.width, canvasDimensions.height]", drawBlanket, true);
             
             function getCanvasDimensions() {
                 return {
                     height: element[0].clientHeight,
-                    width: element[0].clientWidth,
-                    scaleFactor: 0.5
+                    width: element[0].clientWidth
                 };
             }
             
@@ -63,18 +59,17 @@ angular.module("temperature-blanket").directive("tbCanvas", function($window, $d
                 canvas.clearRect(0, 0, scope.canvasDimensions.width, scope.canvasDimensions.height);
             }
             
-            function drawBlanket(coordinates)  {
+            function renderBlanket(coordinates, scaleFactor)  {
                 clearCanvas();
-                const lineOffset = scope.blanketParams.options.triangleCaps ? 0.5 : 0;
-                canvas.translate(scope.canvasDimensions.width / 2 + lineOffset, lineOffset);
-                canvas.scale(scope.canvasDimensions.scaleFactor, scope.canvasDimensions.scaleFactor);
-                coordinates.map(shape => {
+                canvas.translate(scope.canvasDimensions.width / 2, 0);
+                canvas.scale(scaleFactor, scaleFactor);
+                coordinates.forEach(shape => {
                     canvas.beginPath();
                     shape.points.forEach((point, index) => {
                         if (index === 0) {
-                            canvas.moveTo(shape.points[index].x, shape.points[index].y);
+                            canvas.moveTo(point.x, point.y);
                         } else {
-                            canvas.lineTo(shape.points[index].x, shape.points[index].y);
+                            canvas.lineTo(point.x, point.y);
                         }
                     });
                     canvas.fillStyle = shape.color;
