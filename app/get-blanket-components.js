@@ -41,6 +41,12 @@ function getBlanketComponents(weatherParams, blanketParams, weatherData) {
             const timeZones = ["EST", "CST", "MST", "PST"];
             const timeZoneKey = _(timeZones).find(timeZone => weatherData[0][timeZone] !== undefined);
             
+            if (!timeZoneKey) {
+                const err = new Error("Could not find valid time zone field in weather data");
+                err.timeZones = timeZones;
+                err.weatherData = weatherData[0];
+                throw err;
+            }
             
             const todaysMonth = getMonth(day[timeZoneKey]);
             const tomorrowsMonth = getMonth(weatherData[index + 1][timeZoneKey]);

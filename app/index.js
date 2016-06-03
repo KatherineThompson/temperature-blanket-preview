@@ -25,6 +25,7 @@ angular.module("temperature-blanket", ["foundation"])
         
     $scope.selectedLocation = $scope.locations[7];
     
+    // Eventually this will be configurable in the UI so the color ranges can be adjusted.
     $scope.weatherParams = {
         tempMin: 5,
         tempMax: 104
