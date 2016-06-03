@@ -45,7 +45,7 @@ angular.module("temperature-blanket").directive("tbCanvas", function($window) {
                 }
             }
             
-            scope.$watch("[blanketParams, canvasDimensions.width, canvasDimensions.height]", drawBlanket, true);
+            scope.$watch("[blanketParams, canvasDimensions.width, canvasDimensions.height, weatherData]", drawBlanket, true);
             
             function getCanvasDimensions() {
                 return {
@@ -61,7 +61,7 @@ angular.module("temperature-blanket").directive("tbCanvas", function($window) {
             
             function renderBlanket(coordinates, scaleFactor)  {
                 clearCanvas();
-                canvas.translate(scope.canvasDimensions.width / 2, 0);
+                canvas.translate(scope.canvasDimensions.width / 2 + 0.5, 0.5);
                 canvas.scale(scaleFactor, scaleFactor);
                 coordinates.forEach(shape => {
                     canvas.beginPath();
