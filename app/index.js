@@ -1,6 +1,7 @@
 "use strict";
 
 const angular = require("angular");
+const _ = require("lodash");
 
 angular.module("temperature-blanket", ["foundation"])
     .controller("TemperatureBlanketCtrl", function($scope, getWeatherData) {
@@ -59,6 +60,8 @@ angular.module("temperature-blanket", ["foundation"])
     $scope.$watch("selectedLocation", () => {
         getWeatherData($scope.selectedLocation.fileName).then(function(days) {
             $scope.weatherData = days;
+            $scope.weatherParams.tempMax = _(days).map("Max TemperatureF").map(_.toNumber).max();
+            $scope.weatherParams.tempMin = _(days).map("Min TemperatureF").map(_.toNumber).min();
         });
     }, true);
     

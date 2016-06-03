@@ -2,6 +2,7 @@
 
 const getColor = require("./get-color");
 const moment = require("moment");
+const _ = require("lodash");
 
 function getBlanketComponents(weatherParams, blanketParams, weatherData) {
     const components = [];
@@ -36,8 +37,13 @@ function getBlanketComponents(weatherParams, blanketParams, weatherData) {
             if (blanketParams.options.dayRow) {
                 pushRow(blanketParams.neutralColor);
             }
-            const todaysMonth = getMonth(day.CST);
-            const tomorrowsMonth = getMonth(weatherData[index + 1].CST);
+            
+            const timeZones = ["EST", "CST", "MST", "PST"];
+            const timeZoneKey = _(timeZones).find(timeZone => weatherData[0][timeZone] !== undefined);
+            
+            
+            const todaysMonth = getMonth(day[timeZoneKey]);
+            const tomorrowsMonth = getMonth(weatherData[index + 1][timeZoneKey]);
             if (blanketParams.options.monthRow && todaysMonth < tomorrowsMonth) {
                 pushRow(blanketParams.neutralColor);
             }
