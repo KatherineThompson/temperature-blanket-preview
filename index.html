@@ -9,16 +9,33 @@
         <div class="vertical grid-frame">
             <div class="grid-block">
                 <div id="panel" zf-panel="">
-                    <a zf-close="" class="close-button">×</a>
-                    <h3>What is a temperature blanket?</h3>
-                    <p>
-                        Temperature blankets are knitted or crocheted blankets that use weather data to plot out the
-                        colors used in the blanket. Generally, the blankets use a year's worth of temperature data.
-                        The colors can be arranged in any regular pattern such as rows or squares. This example is a 
-                        bias blanket with two rows for each day, one corresponding to the maximum temperature and the
-                        other to the minimum temperature. The locations here correspond to the ten largest cities by
-                        population in the US as well as DC and a couple locations that I wanted to try out for myself.
-                    </p>
+                    <div class="vertical grid-block">
+                        <div class="grid-block text-center">
+                            <a zf-close="" class="close-button">×</a>
+                            <h2>What is a temperature blanket?</h2>
+                        </div>
+                        <div class="vertical grid-block">
+                            <p>
+                                Temperature blankets are knitted or crocheted blankets that use weather data to plot out the
+                                order of the colors used in the blanket. Generally, the blankets use a year's worth of
+                                temperature data.
+                            </p>
+                            <p>
+                                The colors can be arranged in any regular pattern such as rows or squares.
+                                The example shown here is a bias blanket with two rows for each day, one corresponding to the
+                                maximum temperature and the other to the minimum temperature. There are options to insert a
+                                separating color between day and/or months and as the first and last few rows.
+                            </p>
+                            <p>
+                                The locations here correspond to the ten largest cities by population in the US as well as
+                                Washington, DC and a few custom locations.
+                            </p>
+                            <p class="text-center">
+                                This is an app by <a href="https://github.com/KatherineThompson">Katherine Thompson</a>.
+                                <a href="https://github.com/KatherineThompson/temperature-blanket-preview">Source code is available on github</a>.   
+                            </p>
+                        </div>
+                    </div>
                 </div>
                 <div id="options" class="vertical small-3 grid-block">
                     <span id="help-badge" class="badge shrink" zf-open="panel">?</span>

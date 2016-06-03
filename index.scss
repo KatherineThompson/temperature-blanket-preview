@@ -59,4 +59,10 @@ p {
 #panel {
     width: $side-bar-width;
     padding-left: 1em;
+    
+    h2 {
+        padding-top: 1em;
+        color: $accent-color;
+        font-family: lobster;
+    }
 }
