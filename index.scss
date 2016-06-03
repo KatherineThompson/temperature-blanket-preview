@@ -4,6 +4,7 @@ $breakpoints: map-merge($breakpoints, (large: 1025px));
 @import url(https://fonts.googleapis.com/css?family=Lobster);
 
 $accent-color: deeppink;
+$side-bar-width: 350px;
 
 .center.title {
     font-family: "lobster";
@@ -18,10 +19,6 @@ label {
 #submit-button {
     margin-top: 1em;
     background-color: $accent-color;
-}
-
-#canvas-div {
-    overflow: scroll;
 }
 
 #neutral-menu, #num-colors, p {
@@ -44,9 +41,33 @@ label {
 
 #options {
      border-right: 1px solid $accent-color;
-     min-width: 300px;
+     min-width: $side-bar-width;
 }
 
 p {
     line-height: 1em;
+}
+
+#help-badge {
+    background-color: $accent-color;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 1;
+}
+
+#panel {
+    width: $side-bar-width;
+    padding-left: 1em;
+    padding-right: 1em;
+    
+    h2 {
+        padding-top: 1em;
+        color: $accent-color;
+        font-family: lobster;
+    }
+}
+
+.panel-wrapper {
+    height: 100%;
 }

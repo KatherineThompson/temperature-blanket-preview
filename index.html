@@ -3,21 +3,62 @@
     <head>
         <meta charset="utf-8"/>
         <script src="./dist/built.js"></script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-75965767-3', 'auto');
+            ga('send', 'pageview');
+        </script>
         <title>Temperature Blanket Preview</title>
     </head>
     <body ng-app="temperature-blanket" ng-controller="TemperatureBlanketCtrl">
         <div class="vertical grid-frame">
             <div class="grid-block">
+                <div id="panel" zf-panel="">
+                    <div class="vertical v-align grid-block panel-wrapper">
+                        <div class="grid-block shrink text-center">
+                            <a zf-close="" class="close-button">×</a>
+                            <h2>What is a temperature blanket?</h2>
+                        </div>
+                        <div class="vertical grid-block">
+                            <p>
+                                Temperature blankets are knitted or crocheted blankets that use weather data to plot out the
+                                order of the colors used in the blanket. Generally, the blankets use a year's worth of
+                                temperature data.
+                            </p>
+                            <p>
+                                The colors can be arranged in any regular pattern such as rows or squares.
+                                The example shown here is a bias blanket with two rows for each day, one corresponding to the
+                                maximum temperature and the other to the minimum temperature. There are options to insert a
+                                separating color between day and/or months and as the first and last few rows.
+                            </p>
+                            <p>
+                                The locations here correspond to the ten largest cities by population in the US as well as
+                                Washington, DC and a few custom locations.
+                            </p>
+                        </div>
+                        <div class="grid-block v-align align-bottom">
+                            <p class="align-bottom text-center">
+                                This is an app by <a href="https://github.com/KatherineThompson">Katherine Thompson</a>.
+                                <a href="https://github.com/KatherineThompson/temperature-blanket-preview">Source code is available on github</a>.   
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 <div id="options" class="vertical small-3 grid-block">
+                    <span id="help-badge" class="badge shrink" zf-open="panel">?</span>
                     <div class="title-bar">
                         <div class="center title">Temperature Blanket Preview</div>
                     </div>
                     <div class="shrink grid-block" id="location-menu">
                         <form id="location">
-                            <label for="location">Location</label>
-                            <select id="location">
-                                <option value="edmond">Edmond, OK 2015</option>
-                                <option value="wileyPost">Wiley Post Airport, OK 2015</option>
+                            <label for="location">Location:</label>
+                            <select id="location"
+                                ng-model="selectedLocation"
+                                ng-options="location.fullName for location in locations">
                             </select>
                         </form>
                     </div>
