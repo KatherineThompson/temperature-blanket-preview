@@ -1,0 +1,34 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "impliedStrict": true
+        }
+    },
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "jquery": true,
+        "node": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+        "max-len": ["error", 120],
+        "no-console": "warn",
+        "curly": "error",
+        "dot-notation": "error",
+        "eqeqeq": "error",
+        "no-else-return": "warn",
+        "no-self-compare": "error",
+        "no-var": "error",
+        "prefer-const": "error",
+        "prefer-rest-params": "error",
+        "prefer-spread": "error",
+        "no-multiple-empty-lines": "error",
+        "key-spacing": "error",
+        "semi": "error",
+        "space-before-blocks": "error"
+    }
+}

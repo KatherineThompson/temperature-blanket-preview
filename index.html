@@ -2,64 +2,111 @@
 <html>
     <head>
         <meta charset="utf-8"/>
-        <link rel="stylesheet" type="text/css" href="index.css"/>
-        <script src="http://code.jquery.com/jquery-2.2.0.js"></script>
-        <script src="index.js"></script>
+        <script src="./dist/built.js"></script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-75965767-3', 'auto');
+            ga('send', 'pageview');
+        </script>
         <title>Temperature Blanket Preview</title>
     </head>
-    <body>
-        <h1>Temperature Blanket Preview</h1>
-        <form id="location">
-            <label for="zipCode">Zip Code:</label>
-            <input type="text" name="zipCode">
+    <body ng-app="temperature-blanket" ng-controller="TemperatureBlanketCtrl">
+        <div class="vertical grid-frame">
+            <div class="grid-block">
+                <div id="panel" zf-panel="">
+                    <div class="vertical v-align grid-block panel-wrapper">
+                        <div class="grid-block shrink text-center">
+                            <a zf-close="" class="close-button">×</a>
+                            <h2>What is a temperature blanket?</h2>
+                        </div>
+                        <div class="vertical grid-block">
+                            <p>
+                                Temperature blankets are knitted or crocheted blankets that use weather data to plot out the
+                                order of the colors used in the blanket. Generally, the blankets use a year's worth of
+                                temperature data.
+                            </p>
+                            <p>
+                                The colors can be arranged in any regular pattern such as rows or squares.
+                                The example shown here is a bias blanket with two rows for each day, one corresponding to the
+                                maximum temperature and the other to the minimum temperature. There are options to insert a
+                                separating color between day and/or months and as the first and last few rows.
+                            </p>
+                            <p>
+                                The locations here correspond to the ten largest cities by population in the US as well as
+                                Washington, DC and a few custom locations.
+                            </p>
+                        </div>
+                        <div class="grid-block v-align align-bottom">
+                            <p class="align-bottom text-center">
+                                This is an app by <a href="https://github.com/KatherineThompson">Katherine Thompson</a>.
+                                <a href="https://github.com/KatherineThompson/temperature-blanket-preview">Source code is available on github</a>.   
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div id="options" class="vertical small-3 grid-block">
+                    <span id="help-badge" class="badge shrink" zf-open="panel">?</span>
+                    <div class="title-bar">
+                        <div class="center title">Temperature Blanket Preview</div>
+                    </div>
+                    <div class="shrink grid-block" id="location-menu">
+                        <form id="location">
+                            <label for="location">Location:</label>
+                            <select id="location"
+                                ng-model="selectedLocation"
+                                ng-options="location.fullName for location in locations">
+                            </select>
+                        </form>
+                    </div>
+                    <div class="grid-block" id="color-menu">
+                        <form id="colors">
+                            <div class="grid-block" id="num-colors">
+                                <label for="range">Number of colors:</label>
+                                <input type="range" min="1" max="15" ng-model="blanketParams.numColors">
+                            </div> 
+                            <div class="small-up-3 grid-block">
+                                <p>Please choose colors in order from coldest temperature to hottest</p>
+                                <div class="shrink grid-block"
+                                    ng-repeat="color in blanketParams.colors | limitTo : blanketParams.numColors">
+                                    <label for="color">Color {{$index + 1}}:</label>
+                                    <input type="color" ng-model="blanketParams.colors[$index]">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                         
-            <label for="startDate">Start Date:</label>
-            <input type="date" name="startDate">
-            
-            <label for="endDate">End Date:</label>
-            <input type="date" name="endDate">
-            
-        </form>
-        
-        <form id="colors">
-            <label for="color">Color 1:</label>
-            <input type="color">
-            
-            <label for="color">Color 2:</label>
-            <input type="color">
-            
-            <label for="color">Color 3:</label>
-            <input type="color">
-            
-            <label for="color">Color 4:</label>
-            <input type="color">
-            
-            <label for="color">Color 5:</label>
-            <input type="color">
-        </form>
-        
-        <form id="optional">
-            <label for="neutralColor">Add an additional color:</label>
-            <input type="color">
-            
-            <div>
-            
-                <input type="checkbox" name="dayRow">
-                <label for="dayRow">As an extra row between each day</label>
+                    <div class="vertical grid-block" id="neutral-menu">
+                        <form>
+                            <label for="neutralColor">Add an additional color...</label>
+                            <input type="color" ng-model="blanketParams.neutralColor" id="neutralColor">
+                            
+                            <div>
+                                <input type="checkbox" name="neutralOptions" ng-model="blanketParams.options.dayRow">
+                                <label for="dayRow">...as an extra row between each day</label>
+                            </div>
+                            
+                            <div>
+                                <input type="checkbox" name="neutralOptions" ng-model="blanketParams.options.monthRow" checked>
+                                <label for="monthRow">...as an extra row between each month</label>
+                            </div>
+                            
+                            <div>    
+                                <input type="checkbox" name="neutralOptions" ng-model="blanketParams.options.triangleCaps" checked>
+                                <label for="triangleCaps">...as the first and last rows</label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <tb-canvas id="canvas-div"
+                    weather-params="weatherParams"
+                    blanket-params="blanketParams"
+                    weather-data="weatherData">
+                </tb-canvas>
             </div>
-            
-            <div>
-                <input type="checkbox" name="monthRow">
-                <label for="monthRow">As an extra row between each month</label>
-            </div>
-            <div>    
-                <input type="checkbox" name="triangleCaps">
-                <label for="triangleCaps">As the first and last rows</label>
-           </div>
-        </form>
-        
-        <button>Submit</button>
-        
-        <canvas id="canvas" height="2400" width="2400">Visualization of weather data as a knitted or crocheted blanket</canvas>
+        </div>
     </body>
 </html>

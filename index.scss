@@ -1,0 +1,73 @@
+@import "foundation";
+$breakpoints: map-merge($breakpoints, (large: 1025px));
+
+@import url(https://fonts.googleapis.com/css?family=Lobster);
+
+$accent-color: deeppink;
+$side-bar-width: 350px;
+
+.center.title {
+    font-family: "lobster";
+    color: $accent-color;
+    font-size: 1.5em;
+}
+
+label {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#submit-button {
+    margin-top: 1em;
+    background-color: $accent-color;
+}
+
+#neutral-menu, #num-colors, p {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+ 
+#location-menu {
+    @extend #neutral-menu;
+    padding-top: 0.5em;
+}
+
+#color-menu label {
+    padding-right: 0.5em;
+}
+
+#colors {
+     min-height: 453px;
+}
+
+#options {
+     border-right: 1px solid $accent-color;
+     min-width: $side-bar-width;
+}
+
+p {
+    line-height: 1em;
+}
+
+#help-badge {
+    background-color: $accent-color;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 1;
+}
+
+#panel {
+    width: $side-bar-width;
+    padding-left: 1em;
+    padding-right: 1em;
+    
+    h2 {
+        padding-top: 1em;
+        color: $accent-color;
+        font-family: lobster;
+    }
+}
+
+.panel-wrapper {
+    height: 100%;
+}
